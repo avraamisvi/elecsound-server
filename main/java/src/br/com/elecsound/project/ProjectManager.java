@@ -2,6 +2,8 @@ package br.com.elecsound.project;
 
 import com.google.gson.JsonObject;
 
+import br.com.elecsound.engine.Player;
+
 /**
  * Receive the operations from client and interact with the project.
  * 
@@ -11,11 +13,12 @@ import com.google.gson.JsonObject;
 public class ProjectManager {
 	
 	private Project project;
+	private Player player;
 	
 	//PROJECT
 	
 	public Project createProjectSettings(JsonObject json) {
-		return project = new Project();
+		return project = new Project(json.get("name").getAsString());
 	}
 	
 	public void setProjectSettings(JsonObject json) {

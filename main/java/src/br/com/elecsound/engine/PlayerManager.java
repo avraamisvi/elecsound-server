@@ -16,14 +16,7 @@ public class PlayerManager {
 	public PlayerManager() {
 		
 		playingStatusServer = new PlayingStatusServer(new InetSocketAddress(Configuration.getHost(), Configuration.getPlayPort()));
-		
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				playingStatusServer.start();
-			}
-		}).start();		
-
+		playingStatusServer.start();
 	}
 
 	public void setProject(Project project) {

@@ -3,7 +3,7 @@ package br.com.elecsound.library;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.elecsound.messages.ListInstrumentsMessage;
+import br.com.elecsound.messages.ListInstrumentsResponse;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -22,10 +22,10 @@ public class LibraryManager {
 		
 		LibraryGroup teste = new LibraryGroup();
 		
-		LibraryItem itm = new LibraryItem("instrument 1");
+		LibraryItem itm = new LibraryItem("1","instrument 1");
 		teste.instruments.add(itm);
 		
-		itm = new LibraryItem("instrument 2");
+		itm = new LibraryItem("2","instrument 2");
 		teste.instruments.add(itm);
 		
 		groups.add(teste);
@@ -34,7 +34,7 @@ public class LibraryManager {
 	public JsonElement listInstruments() {
 		Gson gson = new Gson();
 		
-		ListInstrumentsMessage msg = new ListInstrumentsMessage(this.groups);
+		ListInstrumentsResponse msg = new ListInstrumentsResponse(this.groups);
 		
 		return gson.toJsonTree(msg);
 	}

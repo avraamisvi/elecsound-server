@@ -33,10 +33,10 @@ public class PlaySequence
 		osc.output.connect( 0, lineOut.input, 1 );
 		
 		// Start synthesizer using default stereo output at 44100 Hz.
-		synth.start();
+//		synth.start();
 		// We only need to start the LineOut. It will pull data from the
 		// oscillator.
-		lineOut.start();
+//		lineOut.start();
 
 		// Get synthesizer time in seconds.
 		double timeNow = synth.getCurrentTime();
@@ -58,6 +58,8 @@ public class PlaySequence
 		// Sleep while the sound is being generated in the background thread.
 		try
 		{
+			synth.start();
+			lineOut.start();
 			synth.sleepUntil( time + 0.5 );
 		} catch( InterruptedException e )
 		{

@@ -16,7 +16,7 @@ import com.google.gson.JsonObject;
  */
 public class Manager {
 	
-	Server server;
+	MessagesServer server;
 	
 	Project project;
 	
@@ -24,9 +24,11 @@ public class Manager {
 	PlayerManager playerManager;
 	LibraryManager libraryManager;
 	
-	public Manager(Server server) {
+	public Manager(MessagesServer server) {
 		this.projectManager = new ProjectManager();
 		this.playerManager = new PlayerManager();
+		this.libraryManager = new LibraryManager();
+		this.server = server;
 	}
 	
 	public void parseMessage(JsonObject json) {
@@ -38,6 +40,10 @@ public class Manager {
 			break;
 
 		case MessageConstants.LIST_INSTRUMENTS:
+			this.listInstruments();
+			break;
+		
+		case MessageConstants.GET_INSTRUMENT:
 			this.listInstruments();
 			break;
 			

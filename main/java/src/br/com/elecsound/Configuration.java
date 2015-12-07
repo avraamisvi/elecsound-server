@@ -7,10 +7,10 @@ public class Configuration {
 	}
 	
 	public static int getPlayPort() {
-		return 8889;
+		return 9009;
 	}
 	
 	public static int getPort() {
-		return 8887;
+		return 9000;
 	}
 }

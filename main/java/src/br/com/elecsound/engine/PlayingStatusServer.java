@@ -17,7 +17,8 @@ public class PlayingStatusServer extends WebSocketServer {
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
 		// TODO Auto-generated method stub
-		
+		conn.send("OK2");
+		System.out.println("entrou2");
 	}
 
 	@Override

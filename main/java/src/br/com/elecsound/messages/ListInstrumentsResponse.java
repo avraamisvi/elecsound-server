@@ -4,13 +4,12 @@ import java.util.List;
 
 import br.com.elecsound.library.LibraryGroup;
 
-public class ListInstrumentsMessage {
+public class ListInstrumentsResponse extends Message {
 
-	String name;
 	List<LibraryGroup> groups;
 	
-	public ListInstrumentsMessage(List<LibraryGroup> groups) {
-		this.name = MessageConstants.LIST_INSTRUMENTS;
+	public ListInstrumentsResponse(List<LibraryGroup> groups) {
+		super(MessageConstants.LIST_INSTRUMENTS);
 		this.groups = groups;
 	}
 }

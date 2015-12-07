@@ -1,20 +1,21 @@
 package br.com.elecsound.engine;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+
+import br.com.elecsound.project.Instrument;
+import br.com.elecsound.project.InstrumentItem;
+import br.com.elecsound.project.Project;
 
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.unitgen.LineOut;
 
-import br.com.elecsound.project.Instrument;
-import br.com.elecsound.project.Project;
-
 public class Player {
 	
 	private Synthesizer synth;
 	private LineOut lineOut;
-	private HashMap<String, Instrument> instruments;
+	
+	private HashMap<String, InstrumentItem> instruments;
 
 	public Player() {
 		
@@ -34,35 +35,43 @@ public class Player {
 		return lineOut;
 	}
 	
-	public void loadInstrument(Instrument instrument) {
-		instrument.build(this);
-		
+	public void loadInstrumentItem(InstrumentItem instrument) {
+		instrument.connect(this);
 		this.instruments.put(instrument.getId(), instrument);
 	}
 	
-	public void unloadInstrument(Instrument instrument) {
-		
+	public void unloadInstrumentItem(String id) {
+		this.instruments.remove(id).disconnect();
 	}	
 	
-	public void playinstrument(String instrument, int note) {
-		this.instruments.get(instrument).noteOn(note);
+	public void playInstrument(String instrument, int note) {
+		this.instruments.get(instrument).getInstrument().noteOn(note);
 	}
 	
-	public void stopinstrument(String instrument) {
-		this.instruments.get(instrument).noteOff();
+	public void stopInstrument(String instrument) {
+		this.instruments.get(instrument).getInstrument().noteOff();
 	}
 	
 	public void play(Project project, PlayingStatus playingStatus) {
+		stop();
 		
+		project.generate();
+		
+		play(playingStatus);
+	}
+	
+	private void play(PlayingStatus playingStatus) {
+		synth.start();
+		lineOut.start();
 	}
 	
 	public void stop() {
-		
+		synth.stop();
 	}
 	
 	public double parseTime(double time) {
 		double ret = synth.getCurrentTime() + time;
 //		System.out.println("time:"+time+" ret:"+ret);
-		return time;
+		return ret;
 	}	
 }

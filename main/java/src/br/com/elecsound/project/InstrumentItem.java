@@ -1,5 +1,7 @@
 package br.com.elecsound.project;
 
+import br.com.elecsound.engine.Player;
+
 public class InstrumentItem {
 	
 	private String id;
@@ -19,7 +21,7 @@ public class InstrumentItem {
 	}
 	
 	public Instrument createInstrument() {
-		return instrument;
+		return instrument.copy();
 	}
 	
 	public void setColor(Color color) {
@@ -37,4 +39,12 @@ public class InstrumentItem {
 	public String getId() {
 		return id;
 	}
+
+	public void connect(Player player) {
+		this.instrument.connect(player);
+	}
+	
+	public void disconnect() {
+		this.instrument.disconnect();
+	}	
 }

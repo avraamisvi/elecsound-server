@@ -12,20 +12,21 @@ import java.util.List;
  */
 public class Project {
 	
-	String name;
-	String fileName;
-	List<InstrumentItem> instruments;
-	List<TrackLine> trackLines;
+	private String name;
+	private String fileName;
 	
-	HashMap<String, InstrumentItem> instrumentsHash;
-	HashMap<String, TrackLine> trackLinesHash;
+	private List<InstrumentItem> instrumentsItems;
+	private List<TrackLine> trackLines;
+	
+	private HashMap<String, InstrumentItem> instrumentsItemsHash;
+	private HashMap<String, TrackLine> trackLinesHash;
 	
 	public Project(String name) {
 		this.name = name;
 		
-		this.instruments = new ArrayList<>();
+		this.instrumentsItems = new ArrayList<>();
 		this.trackLines = new ArrayList<>();
-		this.instrumentsHash = new HashMap<>();
+		this.instrumentsItemsHash = new HashMap<>();
 		this.trackLinesHash = new HashMap<>();
 	}
 
@@ -46,7 +47,7 @@ public class Project {
 	}
 
 	public List<InstrumentItem> getInstruments() {
-		return instruments;
+		return instrumentsItems;
 	}
 
 	public List<TrackLine> getTrackLines() {
@@ -58,6 +59,35 @@ public class Project {
 	}
 	
 	public HashMap<String, InstrumentItem> getInstrumentsHash() {
-		return instrumentsHash;
+		return instrumentsItemsHash;
+	}
+
+	public void addTrackLine(TrackLine line) {
+		trackLines.add(line);
+		trackLinesHash.put(line.getId(), line);
+	}
+	
+	public void removeTrackLine(String id) {
+		TrackLine track = trackLinesHash.remove(id);
+		trackLines.remove(track);
+		track.disconnect();
+	}
+	
+	public void addInstrumentItem(InstrumentItem instrumentItem) {
+		instrumentsItems.add(instrumentItem);
+		instrumentsItemsHash.put(instrumentItem.getId(), instrumentItem);
+	}
+	
+	public void removeInstrumentItem(String id) {
+		
+		InstrumentItem instItm = instrumentsItemsHash.remove(id);
+		instrumentsItems.remove(instItm);
+		instItm.disconnect();
+	}		
+	
+	public void generate() {
+		for (TrackLine trackline : trackLines) {
+			trackline.play();
+		}
 	}
 }

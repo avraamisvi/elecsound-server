@@ -4,21 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.elecsound.messages.ListInstrumentsResponse;
+import br.com.elecsound.project.Instrument;
+import br.com.elecsound.project.instruments.SineOscilator;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 /**
- * Allows acces to instruments library installed in the server.
+ * Represents the instruments library.
  * 
  * @author abraao
  *
  */
 public class LibraryManager {
 	
-	List<LibraryGroup> groups = new ArrayList<LibraryGroup>();
+	private static List<LibraryGroup> groups = new ArrayList<LibraryGroup>();
+	private static Gson gson;
 	
-	public LibraryManager() {
+	private LibraryManager(){}
+	
+	public static void load() {
+		gson = new Gson();
 		
 		LibraryGroup teste = new LibraryGroup();
 		
@@ -31,11 +37,20 @@ public class LibraryManager {
 		groups.add(teste);
 	}
 	
-	public JsonElement listInstruments() {
-		Gson gson = new Gson();
+	public static JsonElement listInstruments() {
 		
-		ListInstrumentsResponse msg = new ListInstrumentsResponse(this.groups);
+		ListInstrumentsResponse msg = new ListInstrumentsResponse(groups);
 		
 		return gson.toJsonTree(msg);
 	}
+	
+	/**
+	 * Creates a new instrument by its id.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static Instrument createInstrument(String id) {//TODO
+		return new SineOscilator();
+	}	
 }

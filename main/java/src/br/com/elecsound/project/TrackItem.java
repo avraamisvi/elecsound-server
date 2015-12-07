@@ -17,10 +17,10 @@ public class TrackItem {
 		
 		double time = 0;
 		
-		for (int i = 0; i < instrument.loopSequence.length; i++) {
+		for (int i = 0; i < instrument.getLoopSequence().length; i++) {
 			
 			if(time < end) {
-				int state = instrument.loopSequence[i];
+				int state = instrument.getLoopSequence()[i];
 				if(state == Instrument.LOOP_PLAY) {
 					instrument.playLoopIndex(i, start + time);
 				}
@@ -42,5 +42,9 @@ public class TrackItem {
 	
 	public String getId() {
 		return id;
+	}
+
+	public void disconnect() {
+		this.instrument.disconnect();
 	}
 }

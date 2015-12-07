@@ -7,9 +7,12 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import br.com.elecsound.messages.Message;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 public class MessagesServer extends WebSocketServer {
 	Manager manager;
@@ -41,8 +44,8 @@ public class MessagesServer extends WebSocketServer {
 	public void onMessage(WebSocket conn, String message) {
 		// TODO Auto-generated method stub
 		
-		JsonElement obj = gson.fromJson(message, JsonElement.class);
-		manager.parseMessage(obj.getAsJsonObject());
+		JsonObject msg = gson.fromJson(message, JsonObject.class);
+		manager.parseMessage(msg);
 	}
 
 	@Override

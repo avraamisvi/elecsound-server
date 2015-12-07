@@ -4,7 +4,7 @@ import java.util.List;
 
 import br.com.elecsound.library.LibraryGroup;
 
-public class ListInstrumentsResponse extends Message {
+public class ListInstrumentsResponse extends MessageResponse {
 
 	List<LibraryGroup> groups;
 	

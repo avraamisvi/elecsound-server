@@ -42,15 +42,15 @@ public class PlayerManager {
 	}
 	
 	public void playInstrument(JsonObject json) {
-		player.playinstrument(null, 0);
+		player.playInstrument(null, 0);
 	}
 	
 	public void loadInstrument(JsonObject json) {
-		player.loadInstrument(null);
+		player.loadInstrumentItem(null);
 	}
 	
 	public void unloadInstrument(JsonObject json) {
-		player.unloadInstrument(null);
+		player.unloadInstrumentItem(null);
 	}	
 	
 }

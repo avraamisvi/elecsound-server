@@ -2,6 +2,7 @@ package br.com.elecsound;
 
 import br.com.elecsound.engine.PlayerManager;
 import br.com.elecsound.library.LibraryManager;
+import br.com.elecsound.messages.Message;
 import br.com.elecsound.messages.MessageConstants;
 import br.com.elecsound.project.Project;
 import br.com.elecsound.project.ProjectManager;
@@ -22,21 +23,22 @@ public class Manager {
 	
 	ProjectManager projectManager;
 	PlayerManager playerManager;
-	LibraryManager libraryManager;
 	
 	public Manager(MessagesServer server) {
+		
+		LibraryManager.load();
+		
 		this.projectManager = new ProjectManager();
 		this.playerManager = new PlayerManager();
-		this.libraryManager = new LibraryManager();
 		this.server = server;
 	}
 	
-	public void parseMessage(JsonObject json) {
+	public void parseMessage(JsonObject msg) {
 		
-		switch (json.get("name").getAsString()) {
+		switch (msg.get("name").getAsString()) {
 		
 		case MessageConstants.CREATE_PROJECT:
-			this.createProject(json);
+			this.createProject(gson.fromJson(msg, JsonObject.class));
 			break;
 
 		case MessageConstants.LIST_INSTRUMENTS:
@@ -44,20 +46,34 @@ public class Manager {
 			break;
 		
 		case MessageConstants.GET_INSTRUMENT:
-			this.listInstruments();
+			this.getInstrument(msg.getData());
 			break;
-			
+		
+		case MessageConstants.ADD_INSTRUMENT:
+			this.addInstrument(msg.getData());
+			break;
+		
 		default:
 			break;
 		}
 	}
 	
+	private void addInstrument(JsonObject data) {
+		projectManager.addInstrument(data);
+	}
+
 	private void listInstruments() {
-		server.send(libraryManager.listInstruments());
+		server.send(LibraryManager.listInstruments());
 	}
 
 	public void createProject(JsonObject json) {
 		project = projectManager.createProjectSettings(json);
 		playerManager.setProject(project);
 	}
+	
+	public void getInstrument(JsonObject json) {
+		//TODO
+	}	
+	
+	
 }

@@ -1,5 +1,7 @@
 package br.com.elecsound.project;
 
+import com.jsyn.ports.UnitOutputPort;
+import com.jsyn.unitgen.UnitGenerator;
 import com.jsyn.unitgen.UnitVoice;
 import com.softsynth.shared.time.TimeStamp;
 
@@ -23,6 +25,8 @@ public abstract class Instrument {
 	private boolean pianoRollMode = false;
 	private int[] loopSequence;	
 	
+	private int initialLoopSeqIndex = 69;
+	
 	public Instrument(String id, String name) {
 		this.id = id;
 		this.name = name;
@@ -34,28 +38,69 @@ public abstract class Instrument {
 		}
 	}
 
-	public final void build(Player player) {
+	public void setInitialLoopSeqIndex(int initialLoopSeqIndex) {
+		this.initialLoopSeqIndex = initialLoopSeqIndex;
+	}
+	
+	public int getInitialLoopSeqIndex() {
+		return initialLoopSeqIndex;
+	}
+	
+	public final void connect(Player player) {
 		this.player = player;
 		this.init();
+		
+		this.player.getSynth().add(getUnitGenerator());
+		
+		// Connect the oscillator to both channels of the output.
+		getOutPutPort().connect( 0, this.player.getLineOut().input, 0 );//TODO ver essa questao da conexão
+		getOutPutPort().connect( 0, this.player.getLineOut().input, 1 );
+		
 		this.noteOff();
 	}
 	
+	/**
+	 * Remove from player
+	 */
+	public void disconnect() {//TODO ver essa questao da conexão
+		getOutPutPort().disconnect(0, this.player.getLineOut().input, 0 );
+		getOutPutPort().disconnect(0, this.player.getLineOut().input, 1 );
+		this.player.getSynth().remove(getUnitGenerator());
+	}
+	
+	/**
+	 * Initializes the instrument.
+	 */
 	public abstract void init();
-	public abstract UnitVoice getUnit();
-	protected abstract Instrument makeCopy();
+	
+	public abstract UnitVoice getUnitVoice();
+	public abstract UnitGenerator getUnitGenerator();
+	public abstract UnitOutputPort getOutPutPort() ;
+	
+	/**
+	 * Should make an instance of the current object, to allow copying it.
+	 * 
+	 * @return
+	 */
+	protected abstract Instrument newInstance();
 	
 	/**
 	 * it makes an object copy.
 	 * @return
 	 */
 	public Instrument copy() {
-		Instrument inst = makeCopy();
+		
+		Instrument inst = newInstance();//get implemented instance
 		
 		inst.name = this.name;
-		inst.name = this.player;
-		inst.name = this.id;
-		inst.name = this.pianoRollMode = false;
-		inst.name = this.loopSequence;			
+		inst.id = this.id;
+		inst.pianoRollMode = this.pianoRollMode;
+		
+		for(int i = 0; i < this.loopSequence.length; i++) {
+			inst.loopSequence[i] = this.loopSequence[i];
+		}
+		
+		inst.connect(this.player);
 		
 		return inst;
 	}
@@ -72,19 +117,24 @@ public abstract class Instrument {
 		return pianoRollMode;
 	}
 	
+	/**
+	 * play a MIDI note.
+	 * 
+	 * @param note
+	 */
 	public void noteOn(int note) {
 		double freq = Instrument.notes[note];
-		getUnit().noteOn(freq, getAmplitude(), new TimeStamp(0));
+		getUnitVoice().noteOn(freq, getAmplitude(), new TimeStamp(0));
 	}
 	
 	public void noteOff() {
-		getUnit().noteOff(new TimeStamp(0));
+		getUnitVoice().noteOff(new TimeStamp(0));
 	}
 	
 	public void play(double frequency, double start, double duration) {
 		System.out.println("start2 :" + start);
-		getUnit().noteOn(frequency, getAmplitude(), new TimeStamp(player.parseTime(start)));
-		getUnit().noteOff(new TimeStamp(player.parseTime(start + duration)));
+		getUnitVoice().noteOn(frequency, getAmplitude(), new TimeStamp(player.parseTime(start)));
+		getUnitVoice().noteOff(new TimeStamp(player.parseTime(start + duration)));
 	}	
 
 	private double getAmplitude() {
@@ -97,7 +147,7 @@ public abstract class Instrument {
 	}		
 	
 	protected double getFrequencyForLoopIndex(int index) {
-		return notes[index+69];
+		return notes[index+this.initialLoopSeqIndex];
 	}
 	
 	public String getId() {
@@ -106,6 +156,10 @@ public abstract class Instrument {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public int[] getLoopSequence() {
+		return loopSequence;
 	}
 	
 	double convertPitchToFrequency( double pitch )
@@ -128,5 +182,6 @@ public abstract class Instrument {
 		for(int j = 0; j < (12*12); j++) {
 			notes[j]=freq(j);
 		}		
-	}	
+	}
+
 }

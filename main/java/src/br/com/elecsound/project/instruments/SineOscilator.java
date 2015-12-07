@@ -1,5 +1,6 @@
 package br.com.elecsound.project.instruments;
 
+import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.unitgen.UnitGenerator;
 import com.jsyn.unitgen.UnitVoice;
@@ -11,21 +12,32 @@ public class SineOscilator extends Instrument {
 	private SineOscillator osc;
 
 	public SineOscilator() {
-		super("OSC");
+		super("OSC", "OSC");
 	}
 	
 	@Override
 	public void init() {
-		this.player.getSynth().add(osc = new SineOscillator() );
-		
-		// Connect the oscillator to both channels of the output.
-		osc.output.connect( 0, this.player.getLineOut().input, 0 );
-		osc.output.connect( 0, this.player.getLineOut().input, 1 );		
+		osc = new SineOscillator();
+	}
+	
+	@Override
+	public UnitOutputPort getOutPutPort() {
+		return osc.output;
 	}
 
 	@Override
-	public UnitVoice getUnit() {
+	public UnitVoice getUnitVoice() {
 		return osc;
+	}
+
+	@Override
+	public UnitGenerator getUnitGenerator() {
+		return osc;
+	}
+	
+	@Override
+	protected Instrument newInstance() {
+		return new SineOscilator();
 	}
 
 }

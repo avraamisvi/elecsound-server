@@ -3,56 +3,51 @@ package br.com.elecsound.engine;
 import java.net.InetSocketAddress;
 
 import br.com.elecsound.Configuration;
+import br.com.elecsound.project.InstrumentItem;
 import br.com.elecsound.project.Project;
-
-import com.google.gson.JsonObject;
 
 public class PlayerManager {
 	
-	Project project;
-	Player player;
-	PlayingStatusServer playingStatusServer;
+	private static Player player;
+	private static PlayingStatusServer playingStatusServer;
 	
-	public PlayerManager(Player player) {
+	private PlayerManager() {
+	}
+	
+	public static void init(Player player) {
 		
-		this.player = player;
+		PlayerManager.player = player;
 		
 		playingStatusServer = new PlayingStatusServer(new InetSocketAddress(Configuration.getHost(), Configuration.getPlayPort()));
 		playingStatusServer.start();
 	}
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
 	
 	/**
 	 * Plays the project
+	 * 
+	 * @param project project
+	 * @param at initial position in seconds
+	 * @param playingStatus callback status
 	 */
-	public void play(JsonObject json) {
-		player.play(project, new PlayingStatus() {
-			
-			@Override
-			public void update(int seconds) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+	public static void play(Project project, double at, PlayingStatus playingStatus) {
+		player.play(project, playingStatus);
 	}
 	
-	public void stop(JsonObject json) {
+	public static void stop() {
 		player.stop();
 	}
 	
-	public void playInstrument(JsonObject json) {
-		player.playInstrument(null, 0);
+	public static void playInstrumentItem(String id, int note) {
+		player.playInstrument(id, 0);
 	}
 	
-	public void loadInstrument(JsonObject json) {
-		player.loadInstrumentItem(null);
+	public static void loadInstrumentItem(InstrumentItem instrument) {
+		player.loadInstrumentItem(instrument);
 	}
 	
-	public void unloadInstrument(JsonObject json) {
-		player.unloadInstrumentItem(null);
+	public static void unloadInstrumentItem(String id) {
+		player.unloadInstrumentItem(id);
 	}	
 	
 }

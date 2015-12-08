@@ -5,7 +5,7 @@ import br.com.elecsound.engine.PlayerManager;
 import br.com.elecsound.library.LibraryManager;
 import br.com.elecsound.messages.AddInstrumentMessage;
 import br.com.elecsound.messages.CreateProjectMessage;
-import br.com.elecsound.messages.Message;
+import br.com.elecsound.messages.GetInstrumentConfigurationMessage;
 import br.com.elecsound.messages.MessageConstants;
 import br.com.elecsound.project.Project;
 import br.com.elecsound.project.ProjectManager;
@@ -22,22 +22,15 @@ import com.google.gson.JsonObject;
 public class Manager {
 	
 	MessagesServer server;
-	
-	Project project;
-	
-	ProjectManager projectManager;
-	PlayerManager playerManager;
-	
 	Gson gson;
 	
 	public Manager(MessagesServer server) {
 		
-		LibraryManager.load();
-		
 		Player player = new Player();
 		
-		this.projectManager = new ProjectManager(player);
-		this.playerManager = new PlayerManager(player);
+		LibraryManager.load();		
+		PlayerManager.init(player);
+		
 		this.server = server;
 		
 		gson = new Gson();
@@ -55,8 +48,8 @@ public class Manager {
 			this.listInstruments();
 			break;
 		
-		case MessageConstants.GET_INSTRUMENT:
-			this.getInstrument(gson.fromJson(msg, JsonObject.class));
+		case MessageConstants.GET_INSTRUMENT_CONFIG:
+			this.getInstrumentConfig(gson.fromJson(msg, GetInstrumentConfigurationMessage.class));
 			break;
 		
 		case MessageConstants.ADD_INSTRUMENT:
@@ -69,7 +62,7 @@ public class Manager {
 	}
 	
 	private void addInstrument(AddInstrumentMessage msg) {
-		projectManager.addInstrument(msg);
+		ProjectManager.addInstrument(msg);
 	}
 
 	private void listInstruments() {
@@ -77,12 +70,11 @@ public class Manager {
 	}
 
 	public void createProject(CreateProjectMessage msg) {
-		project = projectManager.createProject(msg);
-		playerManager.setProject(project);
+		ProjectManager.createProject(msg);
 	}
 	
-	public void getInstrument(JsonObject json) {
-		//TODO
+	public void getInstrumentConfig(GetInstrumentConfigurationMessage msg) {
+		server.send(gson.toJsonTree(ProjectManager.getInstrumentConfig(msg)));
 	}	
 	
 	

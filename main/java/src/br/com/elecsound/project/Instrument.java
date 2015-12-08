@@ -1,5 +1,8 @@
 package br.com.elecsound.project;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.UnitGenerator;
 import com.jsyn.unitgen.UnitVoice;
@@ -23,7 +26,9 @@ public abstract class Instrument {
 	protected Player player;
 	private String id;
 	private boolean pianoRollMode = false;
-	private int[] loopSequence;	
+	private int[] loopSequence;
+	
+	private HashMap<String, Integer> pianoRoll;
 	
 	private int initialLoopSeqIndex = 69;
 	
@@ -36,6 +41,8 @@ public abstract class Instrument {
 		for (int i = 0; i < 16; i++) {
 			loopSequence[i] = LOOP_NOT_PLAY;
 		}
+		
+		pianoRoll = new HashMap<>();
 	}
 
 	public void setInitialLoopSeqIndex(int initialLoopSeqIndex) {
@@ -96,9 +103,8 @@ public abstract class Instrument {
 		inst.id = this.id;
 		inst.pianoRollMode = this.pianoRollMode;
 		
-		for(int i = 0; i < this.loopSequence.length; i++) {
-			inst.loopSequence[i] = this.loopSequence[i];
-		}
+		inst.loopSequence = this.loopSequence;//they need to share the same loopsequence
+		inst.pianoRoll = this.pianoRoll;//they need to share the same pianoRoll
 		
 		inst.connect(this.player);
 		
@@ -162,6 +168,20 @@ public abstract class Instrument {
 		return loopSequence;
 	}
 	
+	protected abstract InstrumentConfiguration createConfiguration();
+	protected abstract void configure(InstrumentConfiguration config);
+	
+	public void setConfiguration(InstrumentConfiguration config) {
+		this.setInitialLoopSeqIndex(config.getInitialLoopSeqIndex());
+		configure(config);
+	}
+	
+	public InstrumentConfiguration getConfiguration() {
+		InstrumentConfiguration config = createConfiguration();
+		config.setInitialLoopSeqIndex(getInitialLoopSeqIndex());
+		return config;
+	}
+	
 	double convertPitchToFrequency( double pitch )
 	{
 		final double concertA = 440.0;
@@ -184,4 +204,11 @@ public abstract class Instrument {
 		}		
 	}
 
+	public void addPianoRollEntry(String id, int note) {
+		pianoRoll.put(id, note);
+	}
+	
+	public void removePianoRollEntry(String id) {
+		pianoRoll.remove(id);
+	}	
 }

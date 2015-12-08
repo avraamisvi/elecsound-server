@@ -20,7 +20,7 @@ public class TrackLine {
 	}
 	
 	public void remove(String id) {
-		tracks.remove(id);//TODO operacao de remover o track inclui remover o voice do player
+		tracks.remove(id).disconnect();
 	}	
 	
 	public TrackItem getTrack(String id) {
@@ -33,6 +33,10 @@ public class TrackLine {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public HashMap<String, TrackItem> getTracks() {
+		return tracks;
 	}
 	
 	public void play() {

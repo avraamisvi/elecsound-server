@@ -6,13 +6,11 @@ public class InstrumentItem {
 	
 	private String id;
 	private Instrument instrument;
-	private Color color;
 	private int position;
 	
-	public InstrumentItem(String id, Instrument instrument, Color color, int position) {
+	public InstrumentItem(String id, Instrument instrument, int position) {
 		this.id = id;
 		this.instrument = instrument;
-		this.color = color;
 		this.position = position;
 	}
 
@@ -24,16 +22,8 @@ public class InstrumentItem {
 		return instrument.copy();
 	}
 	
-	public void setColor(Color color) {
-		this.color = color;
-	}
-	
 	public int getPosition() {
 		return position;
-	}
-	
-	public Color getColor() {
-		return color;
 	}
 	
 	public String getId() {
@@ -46,5 +36,5 @@ public class InstrumentItem {
 	
 	public void disconnect() {
 		this.instrument.disconnect();
-	}	
+	}
 }

@@ -52,5 +52,5 @@ public class LibraryManager {
 	 */
 	public static Instrument createInstrument(String id) {//TODO
 		return new SineOscilator();
-	}	
+	}
 }

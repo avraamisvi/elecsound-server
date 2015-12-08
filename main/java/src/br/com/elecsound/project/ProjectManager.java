@@ -1,11 +1,30 @@
 package br.com.elecsound.project;
 
-import com.google.gson.JsonObject;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import br.com.elecsound.engine.Player;
+import br.com.elecsound.engine.PlayerManager;
 import br.com.elecsound.library.LibraryManager;
 import br.com.elecsound.messages.AddInstrumentMessage;
+import br.com.elecsound.messages.AddPianoRollEntryMessage;
+import br.com.elecsound.messages.AddTrackItemMessage;
+import br.com.elecsound.messages.AddTrackLineMessage;
 import br.com.elecsound.messages.CreateProjectMessage;
+import br.com.elecsound.messages.GetInstrumentConfigurationMessage;
+import br.com.elecsound.messages.GetInstrumentConfigurationResponse;
+import br.com.elecsound.messages.OpenProjectMessage;
+import br.com.elecsound.messages.OpenProjectResponse;
+import br.com.elecsound.messages.RemoveInstrumentMessage;
+import br.com.elecsound.messages.RemovePianoRollEntryMessage;
+import br.com.elecsound.messages.RemoveTrackItemMessage;
+import br.com.elecsound.messages.RemoveTrackLineMessage;
+import br.com.elecsound.messages.SaveProjectMessage;
+import br.com.elecsound.messages.SetInstrumentConfigurationMessage;
+import br.com.elecsound.messages.SetInstrumentModeMessage;
+import br.com.elecsound.messages.SetLoopIndexMessage;
+import br.com.elecsound.messages.SetProjectSettingsMessage;
 
 /**
  * Receive the operations from client and interact with the project.
@@ -15,70 +34,115 @@ import br.com.elecsound.messages.CreateProjectMessage;
  */
 public class ProjectManager {
 	
-	private Project project;
-	private Player player;
+	private static Project project;
 	
 	//PROJECT
 	
-	public ProjectManager(Player player) {
-		this.player = player;
-	}	
+	private ProjectManager() {
+	}
 	
-	public Project createProject(CreateProjectMessage msg) {
+	public static OpenProjectResponse openProject(OpenProjectMessage msg) throws FileNotFoundException {
+		project = new Project("");
+		
+		OpenProjectResponse resp = new OpenProjectResponse(ProjectFileParser.loadProject(project, new File(msg.getFileName())));
+		
+		return resp;
+	}
+	
+	public static Project createProject(CreateProjectMessage msg) {
 		return project = new Project(msg.getProjectName());
 	}
 
-	public void setProjectSettings(JsonObject json) {
-		
+	public static void setProjectSettings(SetProjectSettingsMessage msg) {
+		project.setSettings(msg.getSettings());
 	}	
 	
-	public void saveProject(JsonObject json) {
-		
+	public static void saveProject(SaveProjectMessage msg) {
+		try {
+			project.saveToFile(msg.getFilePath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
+	
 	//PLAYLIST
 	
-	public void addTrackLine(JsonObject json) {
+	public static void addTrackLine(AddTrackLineMessage msg) {
 		
+		TrackLine line = new TrackLine(msg.getTrackLineId(), msg.getTrackLineName());
+		project.addTrackLine(line);
 	}
 	
-	public void addTrackItem(JsonObject json) {
+	public static void addTrackItem(AddTrackItemMessage msg) {
 		
+		TrackItem trk = new TrackItem(msg.getTrackItemId(), project.getInstrumentItem(msg.getInstrumentItemId()));
+		
+		trk.setStart(msg.getStart());
+		trk.setEnd(msg.getEnd());
+		
+		project.getTrackLine(msg.getTrackLineId()).add(trk);
 	}	
 
-	public void removeTrackLine(JsonObject json) {
-		
+	public static void removeTrackLine(RemoveTrackLineMessage msg) {
+		project.removeTrackLine(msg.getTrackLineId());
 	}
 	
-	public void removeTrackItem(JsonObject json) {
-		
+	public static void removeTrackItem(RemoveTrackItemMessage msg) {
+		project.getTrackLine(msg.getTrackLineId()).remove(msg.getTrackItemId());
 	}	
 	
 	//INSTRUMENT
 	
-	public void addInstrument(AddInstrumentMessage msg) {
+	public static void addInstrument(AddInstrumentMessage msg) {
 		
 		Instrument instrument = LibraryManager.createInstrument(msg.getInstrumentItemId());
-		InstrumentItem item = new InstrumentItem(msg.getInstrumentId(), instrument, Color.GRAY, msg.getPosition());
+		InstrumentItem item = new InstrumentItem(msg.getInstrumentId(), instrument, msg.getPosition());
+		
+//		item.connect(player);
+		PlayerManager.loadInstrumentItem(item);//Connect to player
 		project.addInstrumentItem(item);
 		
 	}	
 	
-	public void removeInstrument(JsonObject json) {
-		
+	public static void removeInstrument(RemoveInstrumentMessage msg) {
+		project.removeInstrumentItem(msg.getInstrumentItemId());
 	}
 	
-	public void changeInstrumentColor(JsonObject json) {
-		
+	public static void setInstrumentConfiguration(SetInstrumentConfigurationMessage msg) {
+		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
+		itm.getInstrument().setConfiguration(msg.getConfiguration());
 	}
+	
+	public static void setLoopIndex(SetLoopIndexMessage msg) {
+		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
+		itm.getInstrument().setPianoRollMode(msg.isPianoRoll());
+	}
+	
+	public static void setInstrumentMode(SetInstrumentModeMessage msg) {
+		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
+		itm.getInstrument().setPianoRollMode(msg.isPianoRoll());
+	}	
 
 	//PIANOROLL
-	public void addPianoRollEntry(JsonObject json) {
-		
+	public static void addPianoRollEntry(AddPianoRollEntryMessage msg) {
+		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
+		itm.getInstrument().addPianoRollEntry(msg.getEntryId(), msg.getNote());
 	}	
 	
-	public void removePianoRollEntry(JsonObject json) {
-		
+	public static void removePianoRollEntry(RemovePianoRollEntryMessage msg) {
+		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
+		itm.getInstrument().removePianoRollEntry(msg.getEntryId());		
 	}
+	
+	public static GetInstrumentConfigurationResponse getInstrumentConfig(GetInstrumentConfigurationMessage msg) {
+		GetInstrumentConfigurationResponse resp = new GetInstrumentConfigurationResponse();
+		
+		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
+		
+		resp.setConfiguration(itm.getInstrument().getConfiguration());
+		
+		return resp;
+	}	
 	
 }

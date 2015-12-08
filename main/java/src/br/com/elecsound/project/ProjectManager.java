@@ -3,6 +3,9 @@ package br.com.elecsound.project;
 import com.google.gson.JsonObject;
 
 import br.com.elecsound.engine.Player;
+import br.com.elecsound.library.LibraryManager;
+import br.com.elecsound.messages.AddInstrumentMessage;
+import br.com.elecsound.messages.CreateProjectMessage;
 
 /**
  * Receive the operations from client and interact with the project.
@@ -17,10 +20,14 @@ public class ProjectManager {
 	
 	//PROJECT
 	
-	public Project createProjectSettings(JsonObject json) {
-		return project = new Project(json.get("name").getAsString());
-	}
+	public ProjectManager(Player player) {
+		this.player = player;
+	}	
 	
+	public Project createProject(CreateProjectMessage msg) {
+		return project = new Project(msg.getProjectName());
+	}
+
 	public void setProjectSettings(JsonObject json) {
 		
 	}	
@@ -49,7 +56,11 @@ public class ProjectManager {
 	
 	//INSTRUMENT
 	
-	public void addInstrument(JsonObject json) {
+	public void addInstrument(AddInstrumentMessage msg) {
+		
+		Instrument instrument = LibraryManager.createInstrument(msg.getInstrumentItemId());
+		InstrumentItem item = new InstrumentItem(msg.getInstrumentId(), instrument, Color.GRAY, msg.getPosition());
+		project.addInstrumentItem(item);
 		
 	}	
 	

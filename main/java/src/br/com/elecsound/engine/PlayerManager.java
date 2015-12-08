@@ -13,7 +13,9 @@ public class PlayerManager {
 	Player player;
 	PlayingStatusServer playingStatusServer;
 	
-	public PlayerManager() {
+	public PlayerManager(Player player) {
+		
+		this.player = player;
 		
 		playingStatusServer = new PlayingStatusServer(new InetSocketAddress(Configuration.getHost(), Configuration.getPlayPort()));
 		playingStatusServer.start();

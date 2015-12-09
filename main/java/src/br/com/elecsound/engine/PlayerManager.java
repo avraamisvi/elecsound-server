@@ -39,7 +39,11 @@ public class PlayerManager {
 	}
 	
 	public static void playInstrumentItem(String id, int note) {
-		player.playInstrument(id, 0);
+		player.playInstrument(id, note);
+	}
+	
+	public static void stopInstrumentItem(String id) {
+		player.stopInstrument(id);
 	}
 	
 	public static void loadInstrumentItem(InstrumentItem instrument) {

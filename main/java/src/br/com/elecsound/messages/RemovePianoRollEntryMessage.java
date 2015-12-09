@@ -6,7 +6,7 @@ public class RemovePianoRollEntryMessage extends Message {
 	String entryId;
 	
 	public RemovePianoRollEntryMessage() {
-		this.name = MessageConstants.REMOVE_PIANO_ROLL_ENTRY;
+		this.name = MessageConstants.REMOVE_PIANOROLL_ENTRY;
 	}
 
 	public String getInstrumentItemId() {

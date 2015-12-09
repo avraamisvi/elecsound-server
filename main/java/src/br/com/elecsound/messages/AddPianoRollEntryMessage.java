@@ -5,9 +5,11 @@ public class AddPianoRollEntryMessage extends Message {
 	String instrumentItemId;
 	String entryId;
 	int note;
+	double duration;
+	double when;
 	
 	public AddPianoRollEntryMessage() {
-		this.name = MessageConstants.ADD_PIANO_ROLL_ENTRY;
+		this.name = MessageConstants.ADD_PIANOROLL_ENTRY;
 	}
 
 	public String getInstrumentItemId() {
@@ -21,4 +23,13 @@ public class AddPianoRollEntryMessage extends Message {
 	public int getNote() {
 		return note;
 	}
+
+	public double getDuration() {
+		return duration;
+	}
+
+	public double getWhen() {
+		return when;
+	}
+	
 }

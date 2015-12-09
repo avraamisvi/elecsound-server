@@ -12,5 +12,9 @@ public class OpenProjectMessage extends Message {
 	public String getFileName() {
 		return fileName;
 	}
+	
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 
 }

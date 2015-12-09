@@ -4,7 +4,12 @@ import java.util.HashMap;
 
 import br.com.elecsound.project.instrument.form.Form;
 
-
+/**
+ * Represents the internal settings of the instrument.
+ * 
+ * @author abraao
+ *
+ */
 public class InstrumentConfiguration {
 	
 	private Color color;

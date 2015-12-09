@@ -41,6 +41,10 @@ public class ProjectManager {
 	private ProjectManager() {
 	}
 	
+	public static Project getProject() {
+		return project;
+	}
+	
 	public static OpenProjectResponse openProject(OpenProjectMessage msg) throws FileNotFoundException {
 		project = new Project("");
 		
@@ -57,13 +61,8 @@ public class ProjectManager {
 		project.setSettings(msg.getSettings());
 	}	
 	
-	public static void saveProject(SaveProjectMessage msg) {
-		try {
-			project.saveToFile(msg.getFilePath());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void saveProject(SaveProjectMessage msg) throws IOException {
+			ProjectFileParser.saveToFile(project, msg.getFilePath());
 	}
 	
 	//PLAYLIST
@@ -127,7 +126,7 @@ public class ProjectManager {
 	//PIANOROLL
 	public static void addPianoRollEntry(AddPianoRollEntryMessage msg) {
 		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
-		itm.getInstrument().addPianoRollEntry(msg.getEntryId(), msg.getNote());
+		itm.getInstrument().addPianoRollEntry(msg.getEntryId(), msg.getNote(), msg.getWhen(), msg.getDuration());
 	}	
 	
 	public static void removePianoRollEntry(RemovePianoRollEntryMessage msg) {

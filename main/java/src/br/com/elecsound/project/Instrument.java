@@ -1,14 +1,13 @@
 package br.com.elecsound.project;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+
+import br.com.elecsound.engine.Player;
 
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.UnitGenerator;
 import com.jsyn.unitgen.UnitVoice;
 import com.softsynth.shared.time.TimeStamp;
-
-import br.com.elecsound.engine.Player;
 
 public abstract class Instrument {
 	
@@ -19,49 +18,48 @@ public abstract class Instrument {
 	private static double[] notes;
 	
 	static {
-		generate();
+		generateNotes();
 	}
 	
-	private String name;
-	protected Player player;
-	private String id;
-	private boolean pianoRollMode = false;
-	private int[] loopSequence;
-	
-	private HashMap<String, Integer> pianoRoll;
-	
-	private int initialLoopSeqIndex = 69;
+	protected SharedProperties properties;
 	
 	public Instrument(String id, String name) {
-		this.id = id;
-		this.name = name;
 		
-		this.loopSequence = new int[16];
+		this.properties = new SharedProperties();
+		
+		this.properties.id = id;
+		this.properties.name = name;
+		
+		this.properties.loopSequence = new int[16];
 		
 		for (int i = 0; i < 16; i++) {
-			loopSequence[i] = LOOP_NOT_PLAY;
+			this.properties.loopSequence[i] = LOOP_NOT_PLAY;
 		}
 		
-		pianoRoll = new HashMap<>();
+		this.properties.pianoRoll = new HashMap<>();
 	}
 
 	public void setInitialLoopSeqIndex(int initialLoopSeqIndex) {
-		this.initialLoopSeqIndex = initialLoopSeqIndex;
+		this.properties.initialLoopSeqIndex = initialLoopSeqIndex;
 	}
 	
 	public int getInitialLoopSeqIndex() {
-		return initialLoopSeqIndex;
+		return this.properties.initialLoopSeqIndex;
 	}
 	
 	public final void connect(Player player) {
-		this.player = player;
+		this.properties.player = player;
 		this.init();
 		
-		this.player.getSynth().add(getUnitGenerator());
+		this.properties.player.getSynth().add(getUnitGenerator());
 		
 		// Connect the oscillator to both channels of the output.
-		getOutPutPort().connect( 0, this.player.getLineOut().input, 0 );//TODO ver essa questao da conexão
-		getOutPutPort().connect( 0, this.player.getLineOut().input, 1 );
+		getOutPutPort().connect( 0, this.properties.player.getLineOut().input, 0 );//TODO ver essa questao da conexão
+		getOutPutPort().connect( 0, this.properties.player.getLineOut().input, 1 );
+		
+		for (PianoRollEntry entry : this.properties.pianoRoll.values()) {
+			entry.connect(player);
+		}
 		
 		this.noteOff();
 	}
@@ -70,9 +68,15 @@ public abstract class Instrument {
 	 * Remove from player
 	 */
 	public void disconnect() {//TODO ver essa questao da conexão
-		getOutPutPort().disconnect(0, this.player.getLineOut().input, 0 );
-		getOutPutPort().disconnect(0, this.player.getLineOut().input, 1 );
-		this.player.getSynth().remove(getUnitGenerator());
+		getOutPutPort().disconnect(0, this.properties.player.getLineOut().input, 0 );
+		getOutPutPort().disconnect(0, this.properties.player.getLineOut().input, 1 );
+		this.properties.player.getSynth().remove(getUnitGenerator());
+		
+		for (PianoRollEntry entry : this.properties.pianoRoll.values()) {
+			entry.disconnect();
+		}		
+		
+		this.properties.player = null;
 	}
 	
 	/**
@@ -99,28 +103,24 @@ public abstract class Instrument {
 		
 		Instrument inst = newInstance();//get implemented instance
 		
-		inst.name = this.name;
-		inst.id = this.id;
-		inst.pianoRollMode = this.pianoRollMode;
+		inst.properties = this.properties;//os instrumentos compartilham suas propriedades
 		
-		inst.loopSequence = this.loopSequence;//they need to share the same loopsequence
-		inst.pianoRoll = this.pianoRoll;//they need to share the same pianoRoll
-		
-		inst.connect(this.player);
+		if(this.properties.player != null)
+			inst.connect(this.properties.player);
 		
 		return inst;
 	}
 	
 	public void setLoop(int index, int state) {
-		loopSequence[index] = state;
+		this.properties.loopSequence[index] = state;
 	}	
 	
 	public void setPianoRollMode(boolean pianoRollMode) {
-		this.pianoRollMode = pianoRollMode;
+		this.properties.pianoRollMode = pianoRollMode;
 	}
 	
 	public boolean isPianoRollMode() {
-		return pianoRollMode;
+		return this.properties.pianoRollMode;
 	}
 	
 	/**
@@ -137,35 +137,71 @@ public abstract class Instrument {
 		getUnitVoice().noteOff(new TimeStamp(0));
 	}
 	
+	public void play(double start, double end) {
+		
+		if(this.properties.pianoRollMode) {
+			double time = 0;
+			for (PianoRollEntry entry : this.properties.pianoRoll.values()) {
+				entry.play(start);
+				time += entry.duration;
+				
+				if(time > end)
+					break;
+			}			
+		} else {
+			double time = 0;
+			
+			for (int i = 0; i < this.getLoopSequence().length; i++) {
+				
+				if(time < end) {
+					int state = this.getLoopSequence()[i];
+					if(state == Instrument.LOOP_PLAY) {
+						this.playLoopIndex(i, start + time);
+					}
+				} else {
+					break;
+				}
+				
+				time = time + Instrument.LOOP_PLAY_TIMESTAMP;
+			}
+		}
+	}	
+	
 	public void play(double frequency, double start, double duration) {
-		System.out.println("start2 :" + start);
-		getUnitVoice().noteOn(frequency, getAmplitude(), new TimeStamp(player.parseTime(start)));
-		getUnitVoice().noteOff(new TimeStamp(player.parseTime(start + duration)));
+		
+		getUnitVoice().noteOn(frequency, getAmplitude(), new TimeStamp(this.properties.player.parseTime(start)));
+		getUnitVoice().noteOff(new TimeStamp(this.properties.player.parseTime(start + duration)));
 	}	
 
+	public void playNote(int note, double start, double duration) {
+		
+		getUnitVoice().noteOn(Instrument.notes[note], getAmplitude(), new TimeStamp(this.properties.player.parseTime(start)));
+		getUnitVoice().noteOff(new TimeStamp(this.properties.player.parseTime(start + duration)));
+	}	
+	
 	private double getAmplitude() {
 		return 0.6;
 	}
 
 	public void playLoopIndex(int index, double start) {
-		System.out.println("start :" + start);
+		System.out.println("start :" + start + " note:" + (getFrequencyForLoopIndex(index)));
 		play(getFrequencyForLoopIndex(index), start, LOOP_PLAY_TIMESTAMP);
 	}		
 	
 	protected double getFrequencyForLoopIndex(int index) {
-		return notes[index+this.initialLoopSeqIndex];
+		return notes[index+this.properties.initialLoopSeqIndex];
 	}
 	
 	public String getId() {
-		return id;
+		return this.properties.id;
 	}
 	
 	public String getName() {
-		return name;
+		return this.properties.name;
 	}
 	
 	public int[] getLoopSequence() {
-		return loopSequence;
+		return this.properties.loopSequence;
 	}
 	
 	protected abstract InstrumentConfiguration createConfiguration();
@@ -197,18 +233,41 @@ public abstract class Instrument {
 		return result;
 	}
 
-	static void generate() {
+	static void generateNotes() {
 		notes = new double[12*12];
 		for(int j = 0; j < (12*12); j++) {
 			notes[j]=freq(j);
 		}		
 	}
 
-	public void addPianoRollEntry(String id, int note) {
-		pianoRoll.put(id, note);
+	 //TODO estudar como otimizar a criação de entradas do pianoRoll para usar um buffer de voices do instrumento
+	public void addPianoRollEntry(String id, int note, double time, double duration) {
+		this.properties.pianoRoll.put(id, new PianoRollEntry(this, id, note, time, duration));
 	}
 	
 	public void removePianoRollEntry(String id) {
-		pianoRoll.remove(id);
+		this.properties.pianoRoll.remove(id).disconnect();
 	}	
+	
+	public HashMap<String, PianoRollEntry> getPianoRoll() {
+		return this.properties.pianoRoll;
+	}
+	
+	public void setLoopSequence(int[] loopSequence) {
+		this.properties.loopSequence = loopSequence;
+	}
+	
+	public void setPianoRoll(HashMap<String, PianoRollEntry> pianoRoll) {
+		this.properties.pianoRoll = pianoRoll;
+	}
+	
+	class SharedProperties {
+		public String id;
+		public String name;
+		public Player player;
+		public int[] loopSequence;
+		public HashMap<String, PianoRollEntry> pianoRoll;
+		public boolean pianoRollMode = false;
+		public int initialLoopSeqIndex = 69;		
+	}
 }

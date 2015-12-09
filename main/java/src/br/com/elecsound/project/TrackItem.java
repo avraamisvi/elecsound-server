@@ -16,23 +16,8 @@ public class TrackItem {
 		this.id = id;
 	}
 	
-	public void play() {
-		
-		double time = 0;
-		
-		for (int i = 0; i < instrument.getLoopSequence().length; i++) {
-			
-			if(time < end) {
-				int state = instrument.getLoopSequence()[i];
-				if(state == Instrument.LOOP_PLAY) {
-					instrument.playLoopIndex(i, start + time);
-				}
-			} else {
-				break;
-			}
-			
-			time = time + Instrument.LOOP_PLAY_TIMESTAMP;
-		}
+	public void play() {		
+		instrument.play(start, end);
 	}
 	
 	public void setStart(double start) {

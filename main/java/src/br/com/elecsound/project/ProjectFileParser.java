@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import br.com.elecsound.engine.PlayerManager;
 import br.com.elecsound.library.LibraryManager;
@@ -91,11 +93,40 @@ public class ProjectFileParser {
 		JsonObject obj = new JsonObject();
 
 		obj.addProperty("id",itm.getId());
-		obj.addProperty("instrument", itm.getInstrument().getId());
+		obj.add("instrument", instrumentToJson(itm.getInstrument()));
 		obj.addProperty("position", itm.getPosition());
+		return obj;
+	}
+	
+	private static JsonObject instrumentToJson(Instrument itm) {
+		JsonObject obj = new JsonObject();
+
+		obj.addProperty("id",itm.getId());
+		obj.addProperty("initialLoopSeqIndex", itm.getInitialLoopSeqIndex());
+		obj.add("loopSequence", gson.toJsonTree(itm.getLoopSequence()));		
+		obj.add("pianoRoll", pianoRollToJson(itm.getPianoRoll()));
+		obj.addProperty("pianoRollMode", itm.isPianoRollMode());
 		
 		return obj;
 	}
+	
+	private static JsonObject pianoRollToJson(HashMap<String, PianoRollEntry> pianoRoll) {
+		
+		JsonObject pin = new JsonObject();
+		
+		for(PianoRollEntry ent : pianoRoll.values()) {
+			JsonObject obj = new JsonObject();
+			
+			obj.addProperty("id", ent.id);
+			obj.addProperty("note", ent.note);
+			obj.addProperty("when", ent.when);
+			obj.addProperty("duration", ent.duration);
+			
+			pin.add(ent.id, obj);
+		}
+		
+		return pin;
+	}	
 	
 	//============================ READING ===============================================================
 	
@@ -106,7 +137,7 @@ public class ProjectFileParser {
 		JsonObject obj = gson.fromJson(reader, JsonObject.class);
 		
 		project.setName(obj.get("name").getAsString());
-		project.setName(obj.get("fileName").getAsString());		
+		project.setFileName(obj.get("fileName").getAsString());		
 		
 		instrumentItemListFromJson(project, obj.get("instrumentsItem").getAsJsonArray());
 		trackLinesFromJson(project, obj.get("trackLines").getAsJsonArray());
@@ -127,15 +158,17 @@ public class ProjectFileParser {
 		
 		TrackLine line = new TrackLine(obj.get("id").getAsString(), obj.get("name").getAsString());
 		
-		trackItemsFromJson(project, line, obj.get("tracks").getAsJsonArray());
+		trackItemsFromJson(project, line, obj.get("tracks").getAsJsonObject());
 		
 		return line;
 	}
 	
-	private static void trackItemsFromJson(Project project, TrackLine line, JsonArray array) {
+	private static void trackItemsFromJson(Project project, TrackLine line, JsonObject tracks) {
 		
-		for(int i = 0; i < array.size(); i++) {
-			JsonObject obj = array.get(i).getAsJsonObject();
+		Set<Entry<String, JsonElement>> entries = tracks.entrySet();
+		
+		for(Entry<String, JsonElement> ent : entries) {
+			JsonObject obj = ent.getValue().getAsJsonObject();
 			line.add(trackItemFromJson(project, obj));
 		}
 		
@@ -165,11 +198,39 @@ public class ProjectFileParser {
 	
 	private static InstrumentItem instrumentItemFromJson(Project project, JsonObject obj) {
 
-		InstrumentItem item = new InstrumentItem(obj.get("id").getAsString(), 
-				LibraryManager.createInstrument(obj.get("instrument").getAsString()), obj.get("position").getAsInt());
+		InstrumentItem item = new InstrumentItem(obj.get("id").getAsString(), instrumentFromJson(obj.get("instrument").getAsJsonObject()), obj.get("position").getAsInt());
 		PlayerManager.loadInstrumentItem(item);
 		
 		return item;
+	}
+	
+	private static Instrument instrumentFromJson(JsonObject obj) {
+		
+		Instrument itm = LibraryManager.createInstrument(obj.get("id").getAsString());
+		
+		itm.setInitialLoopSeqIndex(obj.get("initialLoopSeqIndex").getAsInt());
+		itm.setLoopSequence(gson.fromJson(obj.get("loopSequence"), (new int[0]).getClass()));
+		itm.setPianoRollMode(obj.get("pianoRollMode").getAsBoolean());
+		pianoRollFromJson(itm, obj.get("pianoRoll").getAsJsonObject());
+		
+		return itm;
+	}
+	
+	private static void pianoRollFromJson(Instrument itm, JsonObject pianoRoll) {
+		
+		Set<Entry<String, JsonElement>> entries = pianoRoll.entrySet();
+		
+		for(Entry<String, JsonElement> ent : entries) {
+			JsonObject obj = ent.getValue().getAsJsonObject();
+			
+			itm.addPianoRollEntry(
+					obj.get("id").getAsString()
+					, obj.get("note").getAsInt()
+					, obj.get("when").getAsDouble()
+					, obj.get("duration").getAsDouble()
+					);
+		}
+		
 	}
 	
 	public static void saveToFile(Project project, String fileName) throws IOException {

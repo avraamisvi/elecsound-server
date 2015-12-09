@@ -37,11 +37,11 @@ public class LibraryManager {
 		groups.add(teste);
 	}
 	
-	public static JsonElement listInstruments() {
+	public static ListInstrumentsResponse listInstruments() {
 		
 		ListInstrumentsResponse msg = new ListInstrumentsResponse(groups);
 		
-		return gson.toJsonTree(msg);
+		return msg;
 	}
 	
 	/**

@@ -115,7 +115,7 @@ public class ProjectManager {
 	
 	public static void setLoopIndex(SetLoopIndexMessage msg) {
 		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
-		itm.getInstrument().setPianoRollMode(msg.isPianoRoll());
+		itm.getInstrument().setLoop(msg.getIndex(), msg.getState());
 	}
 	
 	public static void setInstrumentMode(SetInstrumentModeMessage msg) {

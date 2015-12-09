@@ -56,6 +56,8 @@ public class Manager {
 	
 	public void parseMessage(JsonObject msg) {
 		
+		System.out.println(msg);
+		
 		MessageResponse response = null;
 		
 		switch (msg.get("name").getAsString()) {

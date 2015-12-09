@@ -29,6 +29,7 @@ public interface MessageConstants {
 	String SET_LOOP_INDEX = "SET_LOOP_INDEX";
 	String STOP_INSTRUMENT = "STOP_INSTRUMENT";
 	String SHUTDOWN = "SHUTDOWN";
+	String SET_TRACKITEM_INFO = "SET_TRACKITEM_INFO";
 	
 		
 }

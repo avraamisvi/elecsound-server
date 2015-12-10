@@ -1,9 +1,10 @@
 package br.com.elecsound.library;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class LibraryGroup {
+	
 	String name;
-	List<LibraryItem> instruments = new ArrayList<LibraryItem>();
+	HashMap<String, LibraryItem> instruments = new HashMap<String, LibraryItem>();
+	
 }

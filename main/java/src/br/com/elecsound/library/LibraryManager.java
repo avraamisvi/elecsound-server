@@ -27,12 +27,13 @@ public class LibraryManager {
 		gson = new Gson();
 		
 		LibraryGroup teste = new LibraryGroup();
+		teste.name = "teste";
 		
 		LibraryItem itm = new LibraryItem("1","instrument 1");
-		teste.instruments.add(itm);
+		teste.instruments.put("1", itm);
 		
 		itm = new LibraryItem("2","instrument 2");
-		teste.instruments.add(itm);
+		teste.instruments.put("2", itm);
 		
 		groups.add(teste);
 	}

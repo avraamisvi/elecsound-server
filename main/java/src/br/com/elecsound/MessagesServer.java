@@ -55,7 +55,8 @@ public class MessagesServer extends WebSocketServer {
 	}
 	
 	public void send(JsonElement obj) {
-		this.conn.send(gson.toJson(obj));
+		String ret = gson.toJson(obj);
+		this.conn.send(ret);
 	}
 	
 }

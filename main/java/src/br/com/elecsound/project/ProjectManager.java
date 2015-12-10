@@ -12,6 +12,7 @@ import br.com.elecsound.messages.AddPianoRollEntryMessage;
 import br.com.elecsound.messages.AddTrackItemMessage;
 import br.com.elecsound.messages.AddTrackLineMessage;
 import br.com.elecsound.messages.CreateProjectMessage;
+import br.com.elecsound.messages.CreateProjectResponse;
 import br.com.elecsound.messages.GetInstrumentConfigurationMessage;
 import br.com.elecsound.messages.GetInstrumentConfigurationResponse;
 import br.com.elecsound.messages.OpenProjectMessage;
@@ -53,8 +54,13 @@ public class ProjectManager {
 		return resp;
 	}
 	
-	public static Project createProject(CreateProjectMessage msg) {
-		return project = new Project(msg.getProjectName());
+	public static CreateProjectResponse createProject(CreateProjectMessage msg) {
+		CreateProjectResponse resp = new CreateProjectResponse();
+		
+		resp.status = "OK";
+		project = new Project(msg.getProjectName());
+		
+		return resp;
 	}
 
 	public static void setProjectSettings(SetProjectSettingsMessage msg) {

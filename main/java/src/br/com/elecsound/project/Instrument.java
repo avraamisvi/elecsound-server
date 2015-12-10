@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import br.com.elecsound.engine.Player;
 
+import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.UnitGenerator;
 import com.jsyn.unitgen.UnitVoice;
@@ -51,7 +52,9 @@ public abstract class Instrument {
 		this.properties.player = player;
 		this.init();
 		
-		this.properties.player.getSynth().add(getUnitGenerator());
+		Synthesizer synth = this.properties.player.getSynth();
+		
+		synth.add(getUnitGenerator());
 		
 		// Connect the oscillator to both channels of the output.
 		getOutPutPort().connect( 0, this.properties.player.getLineOut().input, 0 );//TODO ver essa questao da conexão
@@ -68,15 +71,17 @@ public abstract class Instrument {
 	 * Remove from player
 	 */
 	public void disconnect() {//TODO ver essa questao da conexão
-		getOutPutPort().disconnect(0, this.properties.player.getLineOut().input, 0 );
-		getOutPutPort().disconnect(0, this.properties.player.getLineOut().input, 1 );
-		this.properties.player.getSynth().remove(getUnitGenerator());
-		
-		for (PianoRollEntry entry : this.properties.pianoRoll.values()) {
-			entry.disconnect();
-		}		
-		
-		this.properties.player = null;
+		if(this.properties.player != null) {
+			getOutPutPort().disconnect(0, this.properties.player.getLineOut().input, 0 );
+			getOutPutPort().disconnect(0, this.properties.player.getLineOut().input, 1 );
+			this.properties.player.getSynth().remove(getUnitGenerator());
+			
+			for (PianoRollEntry entry : this.properties.pianoRoll.values()) {
+				entry.disconnect();
+			}		
+			
+			this.properties = null;
+		}
 	}
 	
 	/**
@@ -151,18 +156,20 @@ public abstract class Instrument {
 		} else {
 			double time = 0;
 			
-			for (int i = 0; i < this.getLoopSequence().length; i++) {
-				
-				if(time < end) {
-					int state = this.getLoopSequence()[i];
-					if(state == Instrument.LOOP_PLAY) {
-						this.playLoopIndex(i, start + time);
+			while(time < end) {//executa um loop ate que o tempo acabe
+				for (int i = 0; i < this.getLoopSequence().length; i++) {
+					
+					if(time < end) {
+						int state = this.getLoopSequence()[i];
+						if(state == Instrument.LOOP_PLAY) {
+							this.playLoopIndex(i, start + time);
+						}
+					} else {
+						break;
 					}
-				} else {
-					break;
+					
+					time = time + Instrument.LOOP_PLAY_TIMESTAMP;
 				}
-				
-				time = time + Instrument.LOOP_PLAY_TIMESTAMP;
 			}
 		}
 	}	

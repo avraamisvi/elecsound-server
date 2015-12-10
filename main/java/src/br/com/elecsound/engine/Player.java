@@ -67,11 +67,12 @@ public class Player {
 	
 	public void stop() {
 		synth.stop();
+		lineOut.start();
 	}
 	
 	public double parseTime(double time) {
 		double ret = synth.getCurrentTime() + time;
 //		System.out.println("time:"+time+" ret:"+ret);
-		return ret;
+		return time;
 	}	
 }

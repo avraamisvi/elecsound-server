@@ -29,7 +29,7 @@ public class InstrumentItem {
 	public String getId() {
 		return id;
 	}
-
+	
 	public void connect(Player player) {
 		this.instrument.connect(player);
 	}

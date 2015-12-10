@@ -1,5 +1,6 @@
 package br.com.elecsound.messages;
 
+
 public class GetInstrumentConfigurationMessage extends MessageResponse{
 	
 	String instrumentItemId;

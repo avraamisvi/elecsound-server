@@ -11,6 +11,7 @@ import br.com.elecsound.messages.AddPianoRollEntryMessage;
 import br.com.elecsound.messages.AddTrackItemMessage;
 import br.com.elecsound.messages.AddTrackLineMessage;
 import br.com.elecsound.messages.CreateProjectMessage;
+import br.com.elecsound.messages.CreateProjectResponse;
 import br.com.elecsound.messages.GetInstrumentConfigurationMessage;
 import br.com.elecsound.messages.MessageConstants;
 import br.com.elecsound.messages.MessageResponse;
@@ -24,6 +25,7 @@ import br.com.elecsound.messages.SaveProjectMessage;
 import br.com.elecsound.messages.SetInstrumentConfigurationMessage;
 import br.com.elecsound.messages.SetInstrumentModeMessage;
 import br.com.elecsound.messages.SetLoopIndexMessage;
+import br.com.elecsound.messages.SetTrackItemInfo;
 import br.com.elecsound.messages.StopInstrumentMessage;
 import br.com.elecsound.project.ProjectManager;
 
@@ -133,6 +135,10 @@ public class Manager {
 		case MessageConstants.REMOVE_TRACK_ITEM:
 			ProjectManager.removeTrackItem(gson.fromJson(msg, RemoveTrackItemMessage.class));
 			break;
+			
+		case MessageConstants.SET_TRACKITEM_INFO:
+			ProjectManager.setTrackItemInfo(gson.fromJson(msg, SetTrackItemInfo.class));
+			break;			
 
 		case MessageConstants.SET_LOOP_INDEX:
 			ProjectManager.setLoopIndex(gson.fromJson(msg, SetLoopIndexMessage.class));
@@ -183,8 +189,8 @@ public class Manager {
 		ProjectManager.addInstrument(msg);
 	}
 
-	public void createProject(CreateProjectMessage msg) {
-		ProjectManager.createProject(msg);
+	public CreateProjectResponse createProject(CreateProjectMessage msg) {
+		return ProjectManager.createProject(msg);
 	}	
 	
 }

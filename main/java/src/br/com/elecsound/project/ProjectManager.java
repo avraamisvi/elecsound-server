@@ -26,6 +26,7 @@ import br.com.elecsound.messages.SetInstrumentConfigurationMessage;
 import br.com.elecsound.messages.SetInstrumentModeMessage;
 import br.com.elecsound.messages.SetLoopIndexMessage;
 import br.com.elecsound.messages.SetProjectSettingsMessage;
+import br.com.elecsound.messages.SetTrackItemInfo;
 
 /**
  * Receive the operations from client and interact with the project.
@@ -47,6 +48,11 @@ public class ProjectManager {
 	}
 	
 	public static OpenProjectResponse openProject(OpenProjectMessage msg) throws FileNotFoundException {
+		
+		if(project != null) {
+			project.close();
+		}
+		
 		project = new Project("");
 		
 		OpenProjectResponse resp = new OpenProjectResponse(ProjectFileParser.loadProject(project, new File(msg.getFileName())));
@@ -55,6 +61,11 @@ public class ProjectManager {
 	}
 	
 	public static CreateProjectResponse createProject(CreateProjectMessage msg) {
+		
+		if(project != null) {
+			project.close();
+		}
+		
 		CreateProjectResponse resp = new CreateProjectResponse();
 		
 		resp.status = "OK";
@@ -102,7 +113,7 @@ public class ProjectManager {
 	public static void addInstrument(AddInstrumentMessage msg) {
 		
 		Instrument instrument = LibraryManager.createInstrument(msg.getInstrumentItemId());
-		InstrumentItem item = new InstrumentItem(msg.getInstrumentId(), instrument, msg.getPosition());
+		InstrumentItem item = new InstrumentItem(msg.getInstrumentItemId(), instrument, msg.getPosition());
 		
 //		item.connect(player);
 		PlayerManager.loadInstrumentItem(item);//Connect to player
@@ -145,9 +156,16 @@ public class ProjectManager {
 		
 		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
 		
+		resp.setInstrumentItemId(itm.getId());
 		resp.setConfiguration(itm.getInstrument().getConfiguration());
 		
 		return resp;
+	}
+
+	public static void setTrackItemInfo(SetTrackItemInfo msg) {
+		TrackItem track = project.getTrackLine(msg.getTrackLineId()).getTrack(msg.getTrackItemId());
+		track.setEnd(msg.getEnd());
+		track.setStart(msg.getStart());
 	}	
 	
 }

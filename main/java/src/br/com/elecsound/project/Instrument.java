@@ -139,7 +139,7 @@ public abstract class Instrument {
 	}
 	
 	public void noteOff() {
-		getUnitVoice().noteOff(new TimeStamp(0));
+		getUnitVoice().noteOff(new TimeStamp(this.properties.player.parseTime(0)));
 	}
 	
 	public void play(double start, double end) {

@@ -66,8 +66,11 @@ public class Player {
 	}
 	
 	public void stop() {
-		synth.stop();
-		lineOut.stop();
+		
+		if(synth.isRunning()) {
+			synth.stop();
+//			lineOut.stop();
+		}
 	}
 	
 	public double parseTime(double time) {

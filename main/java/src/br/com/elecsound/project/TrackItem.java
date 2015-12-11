@@ -48,4 +48,8 @@ public class TrackItem {
 		return instrumentItem;
 	}
 	
+	public void stop() {
+		instrument.noteOff();
+	}
+	
 }

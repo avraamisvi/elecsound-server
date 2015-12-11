@@ -5,11 +5,13 @@ import java.net.InetSocketAddress;
 import br.com.elecsound.Configuration;
 import br.com.elecsound.project.InstrumentItem;
 import br.com.elecsound.project.Project;
+import br.com.elecsound.project.TrackLine;
 
 public class PlayerManager {
 	
 	private static Player player;
 	private static PlayingStatusServer playingStatusServer;
+	private static Project playingProject;
 	
 	private PlayerManager() {
 	}
@@ -31,11 +33,28 @@ public class PlayerManager {
 	 * @param playingStatus callback status
 	 */
 	public static void play(Project project, double at, PlayingStatus playingStatus) {
-		player.play(project, playingStatus);
+		
+		synchronized (player) {
+			playingProject = project;
+			player.play(project, playingStatus);			
+		}
 	}
 	
 	public static void stop() {
-		player.stop();
+		
+		synchronized (player) {
+			player.stop();
+			
+			if(playingProject != null) {
+				for(TrackLine trk : playingProject.getTrackLines()) {
+					trk.stop();
+				}
+			}
+			
+			playingProject = null;
+			
+			player.start();
+		}
 	}
 	
 	public static void playInstrumentItem(String id, int note) {

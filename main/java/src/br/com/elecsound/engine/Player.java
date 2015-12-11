@@ -65,11 +65,16 @@ public class Player {
 		lineOut.start();
 	}
 	
+	public void start() {
+		synth.start();
+		lineOut.start();		
+	}
+	
 	public void stop() {
 		
 		if(synth.isRunning()) {
 			synth.stop();
-//			lineOut.stop();
+			synth.clear();
 		}
 	}
 	

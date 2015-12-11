@@ -161,9 +161,13 @@ public abstract class Instrument {
 					
 					if(time < end) {
 						int state = this.getLoopSequence()[i];
-						if(state == Instrument.LOOP_PLAY) {
-							this.playLoopIndex(i, start + time);
-						}
+						if(state == Instrument.LOOP_PLAY) {							
+							this.playLoopIndex(i, start + time);//TODO remover o noteoff quando a proxima nota nao for muda
+//							getUnitVoice().noteOn(getFrequencyForLoopIndex(i), getAmplitude(), new TimeStamp(this.properties.player.parseTime(start)));
+						} 
+//						else {
+//							getUnitVoice().noteOff(new TimeStamp(this.properties.player.parseTime(start + time)));
+//						}
 					} else {
 						break;
 					}

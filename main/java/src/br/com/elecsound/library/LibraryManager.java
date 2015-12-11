@@ -26,16 +26,28 @@ public class LibraryManager {
 	public static void load() {
 		gson = new Gson();
 		
-		LibraryGroup teste = new LibraryGroup();
-		teste.name = "teste";
+//		LibraryGroup teste = new LibraryGroup();
+//		teste.name = "teste";
+//		
+//		LibraryItem itm = new LibraryItem("1","instrument 1");
+//		teste.instruments.put("1", itm);
+//		
+//		itm = new LibraryItem("2","instrument 2");
+//		teste.instruments.put("2", itm);
 		
-		LibraryItem itm = new LibraryItem("1","instrument 1");
-		teste.instruments.put("1", itm);
+		for(int i = 0; i < 30; i++) {
+			LibraryGroup teste = new LibraryGroup();
+			teste.name = "teste" + i;
+			
+			LibraryItem itm = new LibraryItem("1"+i,"instrument 1"+i);
+			teste.instruments.put("1"+i, itm);
+			
+			itm = new LibraryItem("2"+i,"instrument 2"+i);
+			teste.instruments.put("2"+i, itm);			
+			
+			groups.add(teste);
+		}
 		
-		itm = new LibraryItem("2","instrument 2");
-		teste.instruments.put("2", itm);
-		
-		groups.add(teste);
 	}
 	
 	public static ListInstrumentsResponse listInstruments() {

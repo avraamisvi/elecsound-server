@@ -44,6 +44,12 @@ public class TrackLine {
 			track.play();
 		}
 	}
+	
+	public void stop() {
+		for (TrackItem track : tracks.values()) {
+			track.stop();
+		}
+	}	
 
 	public void disconnect() {
 		for (TrackItem track : tracks.values()) {

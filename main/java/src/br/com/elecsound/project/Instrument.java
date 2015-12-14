@@ -14,14 +14,14 @@ public abstract class Instrument {
 	
 	public static int LOOP_PLAY = 1;
 	public static int LOOP_NOT_PLAY = 0;
-	public static double LOOP_PLAY_TIMESTAMP = 0.3;
+//	public static double LOOP_PLAY_TIMESTAMP = 0.3;
 	
 	private static double[] notes;
 	
 	static {
 		generateNotes();
 	}
-	
+		
 	protected SharedProperties properties;
 	
 	public Instrument(String id, String name) {
@@ -47,6 +47,14 @@ public abstract class Instrument {
 	public int getInitialLoopSeqIndex() {
 		return this.properties.initialLoopSeqIndex;
 	}
+	
+	public double getLoopSpeedRate() {
+		return this.properties.loopSpeedRate;
+	}
+	
+	public void setLoopSpeedRate(double speed) {
+		this.properties.loopSpeedRate = speed;
+	}	
 	
 	public final void connect(Player player) {
 		this.properties.player = player;
@@ -172,7 +180,7 @@ public abstract class Instrument {
 						break;
 					}
 					
-					time = time + Instrument.LOOP_PLAY_TIMESTAMP;
+					time = time + this.getLoopSpeedRate();
 				}
 			}
 		}
@@ -196,7 +204,7 @@ public abstract class Instrument {
 
 	public void playLoopIndex(int index, double start) {
 		System.out.println("start :" + start + " note:" + (getFrequencyForLoopIndex(index)));
-		play(getFrequencyForLoopIndex(index), start, LOOP_PLAY_TIMESTAMP);
+		play(getFrequencyForLoopIndex(index), start, this.getLoopSpeedRate());
 	}		
 	
 	protected double getFrequencyForLoopIndex(int index) {
@@ -220,12 +228,14 @@ public abstract class Instrument {
 	
 	public void setConfiguration(InstrumentConfiguration config) {
 		this.setInitialLoopSeqIndex(config.getInitialLoopSeqIndex());
+		this.setLoopSpeedRate(config.getSpeed());
 		configure(config);
 	}
 	
 	public InstrumentConfiguration getConfiguration() {
 		InstrumentConfiguration config = createConfiguration();
 		config.setInitialLoopSeqIndex(getInitialLoopSeqIndex());
+		config.setSpeed(this.getLoopSpeedRate());
 		return config;
 	}
 	
@@ -279,6 +289,7 @@ public abstract class Instrument {
 		public int[] loopSequence;
 		public HashMap<String, PianoRollEntry> pianoRoll;
 		public boolean pianoRollMode = false;
-		public int initialLoopSeqIndex = 69;		
+		public int initialLoopSeqIndex = 69;
+		public double loopSpeedRate = 0.3;
 	}
 }

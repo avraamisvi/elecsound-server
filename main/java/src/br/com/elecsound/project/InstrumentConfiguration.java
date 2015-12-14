@@ -14,6 +14,7 @@ public class InstrumentConfiguration {
 	
 	private Color color;
 	private int initialLoopSeqIndex;
+	private double speed;
 	private Form form;
 	private HashMap<String, String> fields;
 	
@@ -52,6 +53,14 @@ public class InstrumentConfiguration {
 
 	public void setFields(HashMap<String, String> fields) {
 		this.fields = fields;
+	}
+
+	public double getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
 	}
 	
 }

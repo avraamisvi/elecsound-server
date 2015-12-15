@@ -146,20 +146,41 @@ public abstract class Instrument {
 		getUnitVoice().noteOn(freq, getAmplitude(), new TimeStamp(0));
 	}
 	
-	public void noteOff() {
+	public void stopInstrument() {
+		System.out.println("noteOffForPianoRollEntry: " + this.getId());
 		getUnitVoice().noteOff(new TimeStamp(this.properties.player.parseTime(0)));
 	}
+	
+	public void noteOff() {
+		System.out.println("NOTEOFF: " + this.getId());
+		getUnitVoice().noteOff(new TimeStamp(this.properties.player.parseTime(0)));
+	}
+	
+	public void stopPianoRoll() {
+		if(null != this.properties.pianoRoll) {
+			for (PianoRollEntry entry : this.properties.pianoRoll.values()) {
+				entry.stop();
+			}	
+		}		
+	}
+	
+//	public void noteOffForPianoRollEntry() {//TODO fix this Pensando em criar um subinstrument
+//		System.out.println("noteOffForPianoRollEntry: " + this.getId());
+//		getUnitVoice().noteOff(new TimeStamp(this.properties.player.parseTime(0)));
+//	}	
 	
 	public void play(double start, double end) {
 		
 		if(this.properties.pianoRollMode) {
-			double time = 0;
+//			double time = 0;
+			System.out.println("============= TOCANDO: " + this.properties.pianoRoll.size());
 			for (PianoRollEntry entry : this.properties.pianoRoll.values()) {
-				entry.play(start);
-				time += entry.duration;
-				
-				if(time > end)
-					break;
+				entry.play(start, end);
+//				time += entry.duration;
+//				
+//				if(time > end) {
+//					break;
+//				}
 			}			
 		} else {
 			double time = 0;
@@ -263,6 +284,7 @@ public abstract class Instrument {
 
 	 //TODO estudar como otimizar a criação de entradas do pianoRoll para usar um buffer de voices do instrumento
 	public void addPianoRollEntry(String id, int note, double time, double duration) {
+		System.out.println("adicionando piano roll entry " + note);
 		this.properties.pianoRoll.put(id, new PianoRollEntry(this, id, note, time, duration));
 	}
 	

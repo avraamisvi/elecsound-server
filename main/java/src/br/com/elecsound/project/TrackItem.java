@@ -50,6 +50,7 @@ public class TrackItem {
 	
 	public void stop() {
 		instrument.noteOff();
+		instrument.stopPianoRoll();
 	}
 	
 }

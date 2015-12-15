@@ -25,6 +25,7 @@ import br.com.elecsound.messages.SaveProjectMessage;
 import br.com.elecsound.messages.SetInstrumentConfigurationMessage;
 import br.com.elecsound.messages.SetInstrumentModeMessage;
 import br.com.elecsound.messages.SetLoopIndexMessage;
+import br.com.elecsound.messages.SetPianoRollEntryMessage;
 import br.com.elecsound.messages.SetTrackItemInfo;
 import br.com.elecsound.messages.StopInstrumentMessage;
 import br.com.elecsound.project.ProjectManager;
@@ -120,6 +121,10 @@ public class Manager {
 			ProjectManager.removePianoRollEntry(gson.fromJson(msg, RemovePianoRollEntryMessage.class));
 			break;
 		
+		case MessageConstants.SET_PIANOROLL_ENTRY:
+			ProjectManager.setPianoRollEntry(gson.fromJson(msg, SetPianoRollEntryMessage.class));
+			break;
+			
 		case MessageConstants.ADD_TRACK_LINE:
 			ProjectManager.addTrackLine(gson.fromJson(msg, AddTrackLineMessage.class));
 			break;

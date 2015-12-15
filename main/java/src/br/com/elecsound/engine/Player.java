@@ -49,7 +49,7 @@ public class Player {
 	}
 	
 	public void stopInstrument(String instrument) {
-		this.instruments.get(instrument).getInstrument().noteOff();
+		this.instruments.get(instrument).getInstrument().stopInstrument();
 	}
 	
 	public void play(Project project, PlayingStatus playingStatus) {
@@ -80,8 +80,8 @@ public class Player {
 	
 	public double parseTime(double time) {
 		double ret = synth.getCurrentTime() + time;
-		System.out.println("time:"+time+" ret:"+ret);
-		System.out.println("synth.getCurrentTime():" + synth.getCurrentTime());
+//		System.out.println("time:"+time+" ret:"+ret);
+//		System.out.println("synth.getCurrentTime():" + synth.getCurrentTime());
 		return ret;
 	}	
 }

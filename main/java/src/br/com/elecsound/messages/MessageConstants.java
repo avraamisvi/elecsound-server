@@ -30,6 +30,7 @@ public interface MessageConstants {
 	String STOP_INSTRUMENT = "STOP_INSTRUMENT";
 	String SHUTDOWN = "SHUTDOWN";
 	String SET_TRACKITEM_INFO = "SET_TRACKITEM_INFO";
+	String SET_PIANOROLL_ENTRY = "SET_PIANOROLL_ENTRY";
 	
 		
 }

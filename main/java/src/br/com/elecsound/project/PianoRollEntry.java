@@ -19,9 +19,20 @@ public class PianoRollEntry {
 		this.instrument = instrument.copy();
 	}
 
-	public void play(double start) {
-		instrument.playNote(note, when+start, duration);
+	public void play(double start, double end) {
+		System.out.println("piano note: " + note + " when: " + (when) + " duration:" + duration);
+		double total = when + duration;
+		
+		if(total > end) {
+			duration = end - start;
+		}
+		
+		instrument.playNote(note, when, duration);
 	}
+	
+	public void stop() {
+		instrument.noteOff();//TODO change this
+	}	
 	
 	public void disconnect() {
 		instrument.disconnect();

@@ -16,7 +16,9 @@ public class Player {
 	private LineOut lineOut;
 	
 	private HashMap<String, InstrumentItem> instruments;
-
+	
+	private HashMap<String, Instrument> instrumentsInSynth;
+	
 	public Player() {
 		
 		instruments = new HashMap<>();
@@ -26,7 +28,13 @@ public class Player {
 		synth.start();
 		lineOut.start();
 	}
-	
+//	
+//	public void addInstrument(Instrument instrument) {
+//		instrumentsInSynth.put(instrument.getId(), instrument);
+//		
+//		criar um metodo para adicionar instrumentos e encapsular o synth completmante?
+//	}
+//	
 	public Synthesizer getSynth() {
 		return synth;
 	}
@@ -72,10 +80,10 @@ public class Player {
 	
 	public void stop() {
 		
-		if(synth.isRunning()) {
+//		if(synth.isRunning()) {
 			synth.stop();
 			synth.clear();
-		}
+//		}
 	}
 	
 	public double parseTime(double time) {

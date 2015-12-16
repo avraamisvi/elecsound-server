@@ -42,7 +42,7 @@ public class PlayerManager {
 	
 	public static void stop() {
 		
-		synchronized (player) {
+		synchronized (player) {//TODO remover
 			player.stop();
 			
 			if(playingProject != null) {

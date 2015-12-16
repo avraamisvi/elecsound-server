@@ -37,6 +37,7 @@ public class MessagesServer extends WebSocketServer {
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
 		// TODO Auto-generated method stub
+		System.out.println("close");
 	}
 
 	@Override

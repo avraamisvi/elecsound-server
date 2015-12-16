@@ -62,9 +62,14 @@ public class ProjectManager {
 	}
 	
 	public static CreateProjectResponse createProject(CreateProjectMessage msg) {
-		
-		if(project != null) {
-			project.close();
+		try {
+			if(project != null) {
+				project.close();
+			}
+		}catch(RuntimeException ex) {
+			ex.printStackTrace();
+		}catch(Throwable ex) {
+			ex.printStackTrace();
 		}
 		
 		CreateProjectResponse resp = new CreateProjectResponse();

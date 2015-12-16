@@ -35,19 +35,23 @@ public class PianoRollEntry {
 	}	
 	
 	public void disconnect() {
+		System.out.println("disconnect entry: " + this.instrument.hashCode());
 		instrument.disconnect();
 	}
 	
 	public void connect(Player player) {
-		instrument.properties.player = player;
-		instrument.init();
 		
-		instrument.properties.player.getSynth().add(instrument.getUnitGenerator());
-		
-		// Connect the oscillator to both channels of the output.
-		instrument.getOutPutPort().connect( 0, instrument.properties.player.getLineOut().input, 0 );//TODO ver essa questao da conexão
-		instrument.getOutPutPort().connect( 0, instrument.properties.player.getLineOut().input, 1 );
-		
-		instrument.noteOff();
+		/*if(instrument.getUnitGenerator().getSynthesizer() == null) {
+			instrument.properties.player = player;
+			instrument.init();
+			
+			instrument.properties.player.getSynth().add(instrument.getUnitGenerator());
+			
+			// Connect the oscillator to both channels of the output.
+			instrument.getOutPutPort().connect( 0, instrument.properties.player.getLineOut().input, 0 );//TODO ver essa questao da conexão
+			instrument.getOutPutPort().connect( 0, instrument.properties.player.getLineOut().input, 1 );
+			
+			instrument.noteOff();			
+		}*/ //eh realmente necessario?
 	}	
 }

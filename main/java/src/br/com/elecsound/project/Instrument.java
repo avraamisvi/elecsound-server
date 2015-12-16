@@ -68,9 +68,9 @@ public abstract class Instrument {
 		getOutPutPort().connect( 0, this.properties.player.getLineOut().input, 0 );//TODO ver essa questao da conexão
 		getOutPutPort().connect( 0, this.properties.player.getLineOut().input, 1 );
 		
-		for (PianoRollEntry entry : this.properties.pianoRoll.values()) {
-			entry.connect(player);
-		}
+//		for (PianoRollEntry entry : this.properties.pianoRoll.values()) { //TODO realmente necessario?
+//			entry.connect(player);
+//		}
 		
 		this.noteOff();
 	}
@@ -79,16 +79,20 @@ public abstract class Instrument {
 	 * Remove from player
 	 */
 	public void disconnect() {//TODO ver essa questao da conexão
+		System.out.println("disconnect: " + this.hashCode());
 		if(this.properties.player != null) {
 			getOutPutPort().disconnect(0, this.properties.player.getLineOut().input, 0 );
 			getOutPutPort().disconnect(0, this.properties.player.getLineOut().input, 1 );
-			this.properties.player.getSynth().remove(getUnitGenerator());
-			
+			this.properties.player.getSynth().remove(getUnitGenerator());			
+			this.properties = null;
+		}
+	}
+	
+	public void disconnectPianoRoll() {//TODO ver essa questao da conexão
+		if(this.properties.pianoRoll != null) {
 			for (PianoRollEntry entry : this.properties.pianoRoll.values()) {
 				entry.disconnect();
 			}		
-			
-			this.properties = null;
 		}
 	}
 	

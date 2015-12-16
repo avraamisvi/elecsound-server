@@ -35,6 +35,7 @@ public class InstrumentItem {
 	}
 	
 	public void disconnect() {
+		this.instrument.disconnectPianoRoll();
 		this.instrument.disconnect();
 	}
 }

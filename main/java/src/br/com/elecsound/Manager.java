@@ -173,13 +173,7 @@ public class Manager {
 	
 	private void play(PlayMessage msg) {
 		
-		PlayerManager.play(ProjectManager.getProject(), msg.getStart(), new PlayingStatus() {
-			
-			@Override
-			public void update(int seconds) {
-				// TODO Auto-generated method stub
-			}
-		});
+		PlayerManager.play(ProjectManager.getProject(), msg.getStart());
 	}
 
 	private void stopInstrument(StopInstrumentMessage msg) {

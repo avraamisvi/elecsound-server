@@ -32,11 +32,26 @@ public class PlayerManager {
 	 * @param at initial position in seconds
 	 * @param playingStatus callback status
 	 */
-	public static void play(Project project, double at, PlayingStatus playingStatus) {
+	public static void play(Project project, double at) {
 		
 		synchronized (player) {
 			playingProject = project;
-			player.play(project, playingStatus);			
+			player.play(project, new PlayingStatus() {
+//				double last = 0;
+				@Override
+				public void update(double seconds) {
+					
+//					if((seconds - last) < 0.010D) {
+//						return;
+//					}
+					
+//					last = seconds;
+					
+					if(playingStatusServer.conn != null) {
+						playingStatusServer.conn.send(seconds + "");
+					} 
+				}
+			});			
 		}
 	}
 	

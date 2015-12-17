@@ -1,5 +1,5 @@
 package br.com.elecsound.engine;
 
 public interface PlayingStatus {
-	void update(int seconds);
+	void update(double seconds);
 }

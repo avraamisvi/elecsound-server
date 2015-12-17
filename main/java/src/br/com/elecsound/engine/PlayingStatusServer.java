@@ -8,6 +8,8 @@ import org.java_websocket.server.WebSocketServer;
 
 public class PlayingStatusServer extends WebSocketServer {
 	
+	WebSocket conn;
+	
 	public PlayingStatusServer(InetSocketAddress address) {
 		super(address);
 		
@@ -19,6 +21,7 @@ public class PlayingStatusServer extends WebSocketServer {
 		// TODO Auto-generated method stub
 		conn.send("OK2");
 		System.out.println("entrou2");
+		this.conn = conn;
 	}
 
 	@Override

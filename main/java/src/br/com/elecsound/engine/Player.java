@@ -18,6 +18,7 @@ public class Player {
 	private HashMap<String, InstrumentItem> instruments;
 	
 	private HashMap<String, Instrument> instrumentsInSynth;
+	private boolean running = false;
 	
 	public Player() {
 		
@@ -68,9 +69,28 @@ public class Player {
 		play(playingStatus);
 	}
 	
-	private void play(PlayingStatus playingStatus) {
+	private void play(final PlayingStatus playingStatus) {
+		running = true;
+		final double statTime = this.synth.getCurrentTime();
+		
 		synth.start();
 		lineOut.start();
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {				
+				while(Player.this.isRunning()) {
+					playingStatus.update(Player.this.getSynth().getCurrentTime() - statTime);
+					try {
+						Thread.sleep(50);//sem isso ele nao envia pro cliente, TODO rever
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				System.out.println("finished thread playingStatus");
+			}
+		}).start();
 	}
 	
 	public void start() {
@@ -79,11 +99,15 @@ public class Player {
 	}
 	
 	public void stop() {
-		
+		running = false;
 //		if(synth.isRunning()) {
 			synth.stop();
 			synth.clear();
 //		}
+	}
+	
+	public boolean isRunning() {
+		return running ;
 	}
 	
 	public double parseTime(double time) {

@@ -6,6 +6,7 @@ public class TrackLine {
 	
 	private String id;
 	private String name;
+	private boolean muted = false;
 	
 	HashMap<String, TrackItem> tracks;
 
@@ -15,6 +16,14 @@ public class TrackLine {
 		this.tracks = new HashMap<>();
 	}
 	
+	public boolean isMuted() {
+		return muted;
+	}
+
+	public void setMuted(boolean muted) {
+		this.muted = muted;
+	}
+
 	public void add(TrackItem item) {
 		tracks.put(item.getId(), item);
 	}

@@ -140,6 +140,14 @@ public abstract class Instrument {
 		return this.properties.pianoRollMode;
 	}
 	
+	public void setMuted(boolean muted) {
+		this.properties.muted = muted;
+	}
+	
+	public boolean isMuted() {
+		return this.properties.muted;
+	}	
+	
 	/**
 	 * play a MIDI note.
 	 * 
@@ -174,6 +182,8 @@ public abstract class Instrument {
 //	}	
 	
 	public void play(double start, double end) {
+		
+		if(this.properties.muted) return;
 		
 		if(this.properties.pianoRollMode) {
 //			double time = 0;
@@ -317,5 +327,6 @@ public abstract class Instrument {
 		public boolean pianoRollMode = false;
 		public int initialLoopSeqIndex = 69;
 		public double loopSpeedRate = 0.3;
+		public boolean muted = false;
 	}
 }

@@ -70,6 +70,7 @@ public class Player {
 	}
 	
 	private void play(final PlayingStatus playingStatus) {
+		
 		running = true;
 		final double statTime = this.synth.getCurrentTime();
 		

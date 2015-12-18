@@ -1,18 +1,17 @@
 package br.com.elecsound.project.instruments;
 
+import br.com.elecsound.project.Instrument;
+import br.com.elecsound.project.InstrumentConfiguration;
+import br.com.elecsound.project.instrument.form.FormFactory;
+
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.unitgen.UnitGenerator;
 import com.jsyn.unitgen.UnitVoice;
 
-import br.com.elecsound.project.Color;
-import br.com.elecsound.project.Instrument;
-import br.com.elecsound.project.InstrumentConfiguration;
-import br.com.elecsound.project.instrument.form.FormFactory;
-
 public class SineOscilator extends Instrument {
 
-	private SineOscillator osc;
+	private SineOscillator osc;//GoogleWaveOscillator
 	private InstrumentConfiguration config;
 	
 	public SineOscilator() {

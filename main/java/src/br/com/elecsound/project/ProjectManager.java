@@ -24,6 +24,7 @@ import br.com.elecsound.messages.RemoveTrackLineMessage;
 import br.com.elecsound.messages.SaveProjectMessage;
 import br.com.elecsound.messages.SetInstrumentConfigurationMessage;
 import br.com.elecsound.messages.SetInstrumentModeMessage;
+import br.com.elecsound.messages.SetInstrumentMutedMessage;
 import br.com.elecsound.messages.SetLoopIndexMessage;
 import br.com.elecsound.messages.SetPianoRollEntryMessage;
 import br.com.elecsound.messages.SetProjectSettingsMessage;
@@ -180,6 +181,11 @@ public class ProjectManager {
 		
 		entry.duration = msg.getDuration();
 		entry.when = msg.getWhen();		
+	}
+
+	public static void setInstrumentMuted(SetInstrumentMutedMessage msg) {
+		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
+		itm.getInstrument().setMuted(msg.isMuted());
 	}	
 	
 }

@@ -22,6 +22,7 @@ import br.com.elecsound.messages.RemovePianoRollEntryMessage;
 import br.com.elecsound.messages.RemoveTrackItemMessage;
 import br.com.elecsound.messages.RemoveTrackLineMessage;
 import br.com.elecsound.messages.SaveProjectMessage;
+import br.com.elecsound.messages.SetInstrumentAmplitudeMessage;
 import br.com.elecsound.messages.SetInstrumentConfigurationMessage;
 import br.com.elecsound.messages.SetInstrumentModeMessage;
 import br.com.elecsound.messages.SetInstrumentMutedMessage;
@@ -100,6 +101,10 @@ public class Manager {
 			
 		case MessageConstants.SET_INSTRUMENT_MODE:
 			ProjectManager.setInstrumentMode(gson.fromJson(msg, SetInstrumentModeMessage.class));
+			break;
+		
+		case MessageConstants.SET_INSTRUMENT_AMPLITUDE:
+			ProjectManager.setInstrumentAmplitude(gson.fromJson(msg, SetInstrumentAmplitudeMessage.class));
 			break;
 			
 		case MessageConstants.SET_INSTRUMENT_MUTED:

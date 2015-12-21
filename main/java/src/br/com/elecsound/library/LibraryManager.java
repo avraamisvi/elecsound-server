@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.com.elecsound.messages.ListInstrumentsResponse;
 import br.com.elecsound.project.Instrument;
+import br.com.elecsound.project.instruments.GoogleWaveOscilator;
 import br.com.elecsound.project.instruments.SineOscilator;
 
 import com.google.gson.Gson;
@@ -26,27 +27,16 @@ public class LibraryManager {
 	public static void load() {
 		gson = new Gson();
 		
-//		LibraryGroup teste = new LibraryGroup();
-//		teste.name = "teste";
-//		
-//		LibraryItem itm = new LibraryItem("1","instrument 1");
-//		teste.instruments.put("1", itm);
-//		
-//		itm = new LibraryItem("2","instrument 2");
-//		teste.instruments.put("2", itm);
+		LibraryGroup basic = new LibraryGroup();
+		basic.name = "Basic";
 		
-		for(int i = 0; i < 30; i++) {
-			LibraryGroup teste = new LibraryGroup();
-			teste.name = "teste" + i;
-			
-			LibraryItem itm = new LibraryItem("1"+i,"instrument 1"+i);
-			teste.instruments.put("1"+i, itm);
-			
-			itm = new LibraryItem("2"+i,"instrument 2"+i);
-			teste.instruments.put("2"+i, itm);			
-			
-			groups.add(teste);
-		}
+		LibraryItem itm = new LibraryItem("SineOscilator","Sine Oscilator");
+		basic.instruments.put("SineOscilator", itm);
+		
+		itm = new LibraryItem("GoogleWaveOscilator","Google Wave Oscilator");
+		basic.instruments.put("GoogleWaveOscilator", itm);	
+		
+		groups.add(basic);
 		
 	}
 	
@@ -64,6 +54,12 @@ public class LibraryManager {
 	 * @return
 	 */
 	public static Instrument createInstrument(String id) {//TODO
-		return new SineOscilator();
+		
+		if(id.equals("SineOscilator")) {
+			return new SineOscilator();
+		} else {
+			return new GoogleWaveOscilator();
+		}
+		
 	}
 }

@@ -22,6 +22,7 @@ import br.com.elecsound.messages.RemovePianoRollEntryMessage;
 import br.com.elecsound.messages.RemoveTrackItemMessage;
 import br.com.elecsound.messages.RemoveTrackLineMessage;
 import br.com.elecsound.messages.SaveProjectMessage;
+import br.com.elecsound.messages.SetInstrumentAmplitudeMessage;
 import br.com.elecsound.messages.SetInstrumentConfigurationMessage;
 import br.com.elecsound.messages.SetInstrumentModeMessage;
 import br.com.elecsound.messages.SetInstrumentMutedMessage;
@@ -119,7 +120,7 @@ public class ProjectManager {
 	
 	public static void addInstrument(AddInstrumentMessage msg) {
 		
-		Instrument instrument = LibraryManager.createInstrument(msg.getInstrumentItemId());
+		Instrument instrument = LibraryManager.createInstrument(msg.getInstrumentId());
 		InstrumentItem item = new InstrumentItem(msg.getInstrumentItemId(), instrument, msg.getPosition());
 		
 //		item.connect(player);
@@ -136,6 +137,11 @@ public class ProjectManager {
 		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
 		itm.getInstrument().setConfiguration(msg.getConfiguration());
 	}
+	
+	public static void setInstrumentAmplitude(SetInstrumentAmplitudeMessage msg) {
+		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());
+		itm.getInstrument().setAmplitude(msg.getAmplitude());
+	}	
 	
 	public static void setLoopIndex(SetLoopIndexMessage msg) {
 		InstrumentItem itm = project.getInstrumentItem(msg.getInstrumentItemId());

@@ -34,7 +34,7 @@ public class PlayerManager {
 	 */
 	public static void play(Project project, double at) {
 		
-		synchronized (player) {
+		synchronized (player) {//TODO precisa disso?
 			
 			if(player.isRunning())
 				return;

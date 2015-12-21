@@ -183,7 +183,7 @@ public abstract class Instrument {
 	
 	public void play(double start, double end) {
 		
-		if(this.properties.muted) return;
+		if(this.properties.muted || this.properties.amplitude == 0) return;
 		
 		if(this.properties.pianoRollMode) {
 //			double time = 0;
@@ -318,6 +318,10 @@ public abstract class Instrument {
 		this.properties.pianoRoll = pianoRoll;
 	}
 	
+	public void setAmplitude(double ampl) {
+		this.properties.amplitude = ampl;
+	}
+	
 	class SharedProperties {
 		public String id;
 		public String name;
@@ -328,5 +332,6 @@ public abstract class Instrument {
 		public int initialLoopSeqIndex = 69;
 		public double loopSpeedRate = 0.3;
 		public boolean muted = false;
+		public double amplitude;
 	}
 }

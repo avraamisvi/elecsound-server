@@ -234,7 +234,7 @@ public abstract class Instrument {
 	}	
 	
 	private double getAmplitude() {
-		return 0.6;
+		return this.properties.amplitude;
 	}
 
 	public void playLoopIndex(int index, double start) {
@@ -319,6 +319,9 @@ public abstract class Instrument {
 	}
 	
 	public void setAmplitude(double ampl) {
+		
+		ampl = ampl<=1?ampl:1;
+		
 		this.properties.amplitude = ampl;
 	}
 	
@@ -332,6 +335,6 @@ public abstract class Instrument {
 		public int initialLoopSeqIndex = 69;
 		public double loopSpeedRate = 0.3;
 		public boolean muted = false;
-		public double amplitude;
+		public double amplitude = 0.6;
 	}
 }

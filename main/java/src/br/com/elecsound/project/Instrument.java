@@ -31,10 +31,10 @@ public abstract class Instrument {
 		this.properties.id = id;
 		this.properties.name = name;
 		
-		this.properties.loopSequence = new int[16];
+		this.properties.loopSequence = new LoopIndex[16];
 		
 		for (int i = 0; i < 16; i++) {
-			this.properties.loopSequence[i] = LOOP_NOT_PLAY;
+			this.properties.loopSequence[i] = new LoopIndex(this.properties.initialLoopSeqIndex + i, LOOP_NOT_PLAY);
 		}
 		
 		this.properties.pianoRoll = new HashMap<>();
@@ -129,7 +129,7 @@ public abstract class Instrument {
 	}
 	
 	public void setLoop(int index, int state) {
-		this.properties.loopSequence[index] = state;
+		this.properties.loopSequence[index].muted = state;
 	}	
 	
 	public void setPianoRollMode(boolean pianoRollMode) {
@@ -203,7 +203,7 @@ public abstract class Instrument {
 				for (int i = 0; i < this.getLoopSequence().length; i++) {
 					
 					if(time < end) {
-						int state = this.getLoopSequence()[i];
+						int state = this.getLoopSequence()[i].muted;
 						if(state == Instrument.LOOP_PLAY) {							
 							this.playLoopIndex(i, start + time);//TODO remover o noteoff quando a proxima nota nao for muda
 //							getUnitVoice().noteOn(getFrequencyForLoopIndex(i), getAmplitude(), new TimeStamp(this.properties.player.parseTime(start)));
@@ -243,7 +243,7 @@ public abstract class Instrument {
 	}		
 	
 	protected double getFrequencyForLoopIndex(int index) {
-		return notes[index+this.properties.initialLoopSeqIndex];
+		return notes[this.properties.loopSequence[index].note];//index+this.properties.initialLoopSeqIndex
 	}
 	
 	public String getId() {
@@ -254,7 +254,7 @@ public abstract class Instrument {
 		return this.properties.name;
 	}
 	
-	public int[] getLoopSequence() {
+	public LoopIndex[] getLoopSequence() {
 		return this.properties.loopSequence;
 	}
 	
@@ -310,7 +310,7 @@ public abstract class Instrument {
 		return this.properties.pianoRoll;
 	}
 	
-	public void setLoopSequence(int[] loopSequence) {
+	public void setLoopSequence(LoopIndex[] loopSequence) {
 		this.properties.loopSequence = loopSequence;
 	}
 	
@@ -329,12 +329,23 @@ public abstract class Instrument {
 		public String id;
 		public String name;
 		public Player player;
-		public int[] loopSequence;
+		public LoopIndex[] loopSequence;
 		public HashMap<String, PianoRollEntry> pianoRoll;
 		public boolean pianoRollMode = false;
 		public int initialLoopSeqIndex = 69;
 		public double loopSpeedRate = 0.3;
 		public boolean muted = false;
 		public double amplitude = 0.6;
+	}
+	
+	class LoopIndex {
+		public int note;
+		public int muted;
+		
+		public LoopIndex(int note, int muted) {
+			super();
+			this.note = note;
+			this.muted = muted;
+		}
 	}
 }

@@ -28,12 +28,12 @@ public class LibraryManager {
 		gson = new Gson();
 		
 		LibraryGroup basic = new LibraryGroup();
-		basic.name = "Basic";
+		basic.name = "Oscilators";
 		
-		LibraryItem itm = new LibraryItem("SineOscilator","Sine Oscilator");
+		LibraryItem itm = new LibraryItem("SineOscilator","Sine OSC");
 		basic.instruments.put("SineOscilator", itm);
 		
-		itm = new LibraryItem("GoogleWaveOscilator","Google Wave Oscilator");
+		itm = new LibraryItem("GoogleWaveOscilator","Google Wave OSC");
 		basic.instruments.put("GoogleWaveOscilator", itm);	
 		
 		groups.add(basic);

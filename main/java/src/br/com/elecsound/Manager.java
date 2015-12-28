@@ -24,6 +24,7 @@ import br.com.elecsound.messages.RemoveTrackLineMessage;
 import br.com.elecsound.messages.SaveProjectMessage;
 import br.com.elecsound.messages.SetInstrumentAmplitudeMessage;
 import br.com.elecsound.messages.SetInstrumentConfigurationMessage;
+import br.com.elecsound.messages.SetInstrumentLoopIndexNoteMessage;
 import br.com.elecsound.messages.SetInstrumentModeMessage;
 import br.com.elecsound.messages.SetInstrumentMutedMessage;
 import br.com.elecsound.messages.SetLoopIndexMessage;
@@ -158,7 +159,11 @@ public class Manager {
 		case MessageConstants.SET_LOOP_INDEX:
 			ProjectManager.setLoopIndex(gson.fromJson(msg, SetLoopIndexMessage.class));
 			break;
-
+			
+		case MessageConstants.SET_INSTRUMENT_LOOP_INDEX_NOTE:
+			ProjectManager.setInstrumentLoopIndexNote(gson.fromJson(msg, SetInstrumentLoopIndexNoteMessage.class));
+			break;
+			
 		case MessageConstants.PLAY:
 			this.play(gson.fromJson(msg, PlayMessage.class));
 			break;
